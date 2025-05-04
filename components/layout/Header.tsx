@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ShoppingCart, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/hooks/useCart"
+import Image from "next/image"
 
 export default function Header() {
   const { cart } = useCart()
@@ -16,8 +17,9 @@ export default function Header() {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-xl font-bold">
-            MemCommerce
+          <Link href="/" className="flex items-center space-x-2">
+            <Image src="/logo1.png" alt="MemCommerce Logo" width={32} height={32} />
+            <span className="text-xl font-bold">MemCommerce</span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
