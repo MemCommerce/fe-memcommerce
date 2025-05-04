@@ -1,0 +1,116 @@
+"use client"
+
+import { useState } from "react"
+import type { Product } from "@/lib/types"
+import ProductCard from "@/components/shared/ProductCard"
+import { Button } from "@/components/ui/button"
+import { ChevronDown } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+interface CategoryPageProps {
+  products: Product[]
+}
+
+export default function CategoryPage({ products }: CategoryPageProps) {
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
+  const [selectedColors, setSelectedColors] = useState<string[]>([])
+
+  // Get unique sizes and colors from products
+  const sizes = Array.from(new Set(products.flatMap((p) => p.sizes)))
+  const colors = Array.from(new Set(products.flatMap((p) => p.colors)))
+
+  // Filter products based on selected filters
+  const filteredProducts = products.filter((product) => {
+    const sizeMatch = selectedSizes.length === 0 || product.sizes.some((size) => selectedSizes.includes(size))
+
+    const colorMatch = selectedColors.length === 0 || product.colors.some((color) => selectedColors.includes(color))
+
+    return sizeMatch && colorMatch
+  })
+
+  const toggleSize = (size: string) => {
+    setSelectedSizes((prev) => (prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]))
+  }
+
+  const toggleColor = (color: string) => {
+    setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]))
+  }
+
+  const clearFilters = () => {
+    setSelectedSizes([])
+    setSelectedColors([])
+  }
+
+  return (
+    <div>
+      <div className="flex flex-wrap gap-4 mb-8">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2">
+              Size
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {sizes.map((size) => (
+              <DropdownMenuCheckboxItem
+                key={size}
+                checked={selectedSizes.includes(size)}
+                onCheckedChange={() => toggleSize(size)}
+              >
+                {size}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2">
+              Color
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {colors.map((color) => (
+              <DropdownMenuCheckboxItem
+                key={color}
+                checked={selectedColors.includes(color)}
+                onCheckedChange={() => toggleColor(color)}
+              >
+                {color}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {(selectedSizes.length > 0 || selectedColors.length > 0) && (
+          <Button variant="ghost" onClick={clearFilters}>
+            Clear Filters
+          </Button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+
+      {filteredProducts.length === 0 && (
+        <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <h2 className="text-xl font-medium text-gray-600">No products found</h2>
+          <p className="mt-2 text-gray-500">Try changing your filters or check back later.</p>
+          <Button className="mt-4" onClick={clearFilters}>
+            Clear Filters
+          </Button>
+        </div>
+      )}
+    </div>
+  )
+}
