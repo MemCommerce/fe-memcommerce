@@ -2,16 +2,12 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import type { Product } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/hooks/useCart"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Link from "next/link"
 
-interface ProductCardProps {
-  product: Product
-}
-
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product }) {
   const [selectedSize, setSelectedSize] = useState(product.sizes[0])
   const [selectedColor, setSelectedColor] = useState(product.colors[0])
   const { addToCart } = useCart()
@@ -27,19 +23,21 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-      <div className="relative h-64 overflow-hidden">
+      <Link href={`/product/${product.id}`} className="block relative h-64 overflow-hidden">
         <Image
           src={product.image || "/placeholder.svg"}
           alt={product.name}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
-      </div>
+      </Link>
 
       <div className="p-4">
-        <h3 className="font-medium text-lg">{product.name}</h3>
-        <p className="text-gray-500 text-sm mb-2">{product.category}</p>
-        <p className="font-bold text-lg mb-4">${product.price.toFixed(2)}</p>
+        <Link href={`/product/${product.id}`} className="block">
+          <h3 className="font-medium text-lg hover:underline">{product.name}</h3>
+          <p className="text-gray-500 text-sm mb-2">{product.category}</p>
+          <p className="font-bold text-lg mb-4">${product.price.toFixed(2)}</p>
+        </Link>
 
         <div className="grid grid-cols-2 gap-2 mb-4">
           <div>
