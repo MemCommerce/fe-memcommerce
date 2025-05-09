@@ -11,24 +11,22 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { CategoryPageProps } from "@/lib/interfaces"
 
-interface CategoryPageProps {
-  products: Product[]
-}
 
-export default function CategoryPage({ products }: CategoryPageProps) {
+export default function CategoryPage({ data }: CategoryPageProps) {
   const [selectedSizes, setSelectedSizes] = useState<string[]>([])
   const [selectedColors, setSelectedColors] = useState<string[]>([])
 
-  // Get unique sizes and colors from products
-  const sizes = Array.from(new Set(products.flatMap((p) => p.sizes)))
-  const colors = Array.from(new Set(products.flatMap((p) => p.colors)))
+  const { colors, products, productVariants, categories, sizes} = data
 
   // Filter products based on selected filters
   const filteredProducts = products.filter((product) => {
-    const sizeMatch = selectedSizes.length === 0 || product.sizes.some((size) => selectedSizes.includes(size))
+    const sizeMatch = selectedSizes.length === 0 
+      // || product?.sizes.some((size) => selectedSizes.includes(size))
 
-    const colorMatch = selectedColors.length === 0 || product.colors.some((color) => selectedColors.includes(color))
+    const colorMatch = selectedColors.length === 0 
+      // || product?.colors.some((color) => selectedColors.includes(color))
 
     return sizeMatch && colorMatch
   })
@@ -46,6 +44,9 @@ export default function CategoryPage({ products }: CategoryPageProps) {
     setSelectedColors([])
   }
 
+  console.log("productVariants")
+  console.log(productVariants)
+
   return (
     <div>
       <div className="flex flex-wrap gap-4 mb-8">
@@ -59,11 +60,11 @@ export default function CategoryPage({ products }: CategoryPageProps) {
           <DropdownMenuContent>
             {sizes.map((size) => (
               <DropdownMenuCheckboxItem
-                key={size}
-                checked={selectedSizes.includes(size)}
-                onCheckedChange={() => toggleSize(size)}
+                key={size.id}
+                checked={selectedSizes.includes(size.label)}
+                onCheckedChange={() => toggleSize(size.label)}
               >
-                {size}
+                {size.label}
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>
@@ -79,11 +80,11 @@ export default function CategoryPage({ products }: CategoryPageProps) {
           <DropdownMenuContent>
             {colors.map((color) => (
               <DropdownMenuCheckboxItem
-                key={color}
-                checked={selectedColors.includes(color)}
-                onCheckedChange={() => toggleColor(color)}
+                key={color.id}
+                checked={selectedColors.includes(color.name)}
+                onCheckedChange={() => toggleColor(color.name)}
               >
-                {color}
+                {color.name}
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>
@@ -96,9 +97,11 @@ export default function CategoryPage({ products }: CategoryPageProps) {
         )}
       </div>
 
+      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {filteredProducts.filter((product) => productVariants.map((pv) => pv.product_id).includes(product.id)).map((product) => (
+          <ProductCard key={product.id} product={product} productVariants={productVariants.filter((pv) => pv.product_id === product.id)} sizes={sizes} colors={colors} categories={categories}/>
         ))}
       </div>
 

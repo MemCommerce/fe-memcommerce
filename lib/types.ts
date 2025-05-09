@@ -1,14 +1,3 @@
-export interface Product {
-    id: string
-    name: string
-    description: string
-    price: number
-    image: string
-    category: string
-    sizes: string[]
-    colors: string[]
-  }
-  
   export interface CartItem extends Product {
     selectedSize: string
     selectedColor: string
@@ -58,9 +47,9 @@ type ProductBase = {
 
 export type ProductData = ProductBase
 
-// export type Product = ProductBase & {
-//     id: string;
-// }
+export type Product = ProductBase & {
+    id: string;
+}
 
 type ProductVariantBase = {
     product_id: string;
@@ -73,4 +62,12 @@ export type ProductVariantData = ProductVariantBase
 
 export type ProductVariant = ProductVariantBase & {
     id: string;
+}
+
+export type FetchedData = {
+  products: Product[]
+  categories: Category[]
+  colors: Color[]
+  sizes: Size[]
+  productVariants: ProductVariant[]
 }

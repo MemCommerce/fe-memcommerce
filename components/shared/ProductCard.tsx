@@ -1,16 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { useCart } from "@/lib/hooks/useCart"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Link from "next/link"
+import { useState } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/lib/hooks/useCart";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Link from "next/link";
+import { ProductCardProps } from "@/lib/interfaces";
 
-export default function ProductCard({ product }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0])
-  const [selectedColor, setSelectedColor] = useState(product.colors[0])
-  const { addToCart } = useCart()
+export default function ProductCard({ product, productVariants, colors, sizes, categories }: ProductCardProps) {
+  const [selectedSize, setSelectedSize] = useState(productVariants[0]?.size_id);
+  const [selectedColor, setSelectedColor] = useState(productVariants[0]?.color_id);
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
     addToCart({
@@ -18,14 +19,14 @@ export default function ProductCard({ product }) {
       selectedSize,
       selectedColor,
       quantity: 1,
-    })
-  }
+    });
+  };
 
   return (
     <div className="group border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
       <Link href={`/product/${product.id}`} className="block relative h-64 overflow-hidden">
         <Image
-          src={product.image || "/placeholder.svg"}
+          src={product.image || "/t-shirt-placeholder.png"}
           alt={product.name}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -35,8 +36,8 @@ export default function ProductCard({ product }) {
       <div className="p-4">
         <Link href={`/product/${product.id}`} className="block">
           <h3 className="font-medium text-lg hover:underline">{product.name}</h3>
-          <p className="text-gray-500 text-sm mb-2">{product.category}</p>
-          <p className="font-bold text-lg mb-4">${product.price.toFixed(2)}</p>
+          <p className="text-gray-500 text-sm mb-2">{categories.find((c) => c.id === product.category_id)?.name}</p>
+          <p className="font-bold text-lg mb-4">${productVariants[0]?.price}</p>
         </Link>
 
         <div className="grid grid-cols-2 gap-2 mb-4">
@@ -47,9 +48,9 @@ export default function ProductCard({ product }) {
                 <SelectValue placeholder="Select size" />
               </SelectTrigger>
               <SelectContent>
-                {product.sizes.map((size) => (
-                  <SelectItem key={size} value={size}>
-                    {size}
+                {productVariants.map((pv) => (
+                  <SelectItem key={pv.id} value={pv.size_id}>
+                    {sizes.find((s) => s.id === pv.size_id)?.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -63,9 +64,9 @@ export default function ProductCard({ product }) {
                 <SelectValue placeholder="Select color" />
               </SelectTrigger>
               <SelectContent>
-                {product.colors.map((color) => (
-                  <SelectItem key={color} value={color}>
-                    {color}
+                {productVariants.map((pv) => (
+                  <SelectItem key={pv.id} value={pv.color_id}>
+                    {colors.find((c) => c.id ===pv.color_id)?.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -78,5 +79,5 @@ export default function ProductCard({ product }) {
         </Button>
       </div>
     </div>
-  )
+  );
 }
