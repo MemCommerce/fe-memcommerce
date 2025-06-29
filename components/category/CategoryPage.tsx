@@ -1,51 +1,77 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { Product } from "@/lib/types"
-import ProductCard from "@/components/shared/ProductCard"
-import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
+import { useState } from "react";
+import type { Color, Size } from "@/lib/types";
+import ProductCard from "@/components/shared/ProductCard";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { CategoryPageProps } from "@/lib/interfaces"
+} from "@/components/ui/dropdown-menu";
+import { CategoryPageProps } from "@/lib/interfaces";
 
+export default function CategoryPage({ products }: CategoryPageProps) {
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
-export default function CategoryPage({ data }: CategoryPageProps) {
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
-  const [selectedColors, setSelectedColors] = useState<string[]>([])
+  const availableSizes: Size[] = products.reduce<Size[]>((acc, p) => {
+    const variants = p.variants;
+    const sizes: Size[] = variants
+      .filter((v) => !acc.map((s) => s.id).includes(v.size_id))
+      .map((v) => {
+        const sizeName = v.size;
+        const sizeId = v.size_id;
+        return {
+          id: sizeId,
+          label: sizeName,
+        };
+      });
+    return [...acc, ...sizes];
+  }, []);
 
-  const { colors, products, productVariants, categories, sizes} = data
+  const availableColors: Color[] = products.reduce<Color[]>((acc, p) => {
+    const variants = p.variants;
+    const colors: Color[] = variants
+      .filter((v) => !acc.map((c) => c.id).includes(v.color_id))
+      .map((v) => {
+        const colorName = v.color;
+        const colorId = v.color_id;
+        const hex = v.color_hex;
+        return {
+          id: colorId,
+          name: colorName,
+          hex: hex,
+        };
+      });
+    return [...acc, ...colors];
+  }, []);
 
   // Filter products based on selected filters
   const filteredProducts = products.filter((product) => {
-    const sizeMatch = selectedSizes.length === 0 
-      // || product?.sizes.some((size) => selectedSizes.includes(size))
+    const sizeMatch = selectedSizes.length === 0;
+    // || product?.sizes.some((size) => selectedSizes.includes(size))
 
-    const colorMatch = selectedColors.length === 0 
-      // || product?.colors.some((color) => selectedColors.includes(color))
+    const colorMatch = selectedColors.length === 0;
+    // || product?.colors.some((color) => selectedColors.includes(color))
 
-    return sizeMatch && colorMatch
-  })
+    return sizeMatch && colorMatch;
+  });
 
   const toggleSize = (size: string) => {
-    setSelectedSizes((prev) => (prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]))
-  }
+    setSelectedSizes((prev) => (prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]));
+  };
 
   const toggleColor = (color: string) => {
-    setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]))
-  }
+    setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
+  };
 
   const clearFilters = () => {
-    setSelectedSizes([])
-    setSelectedColors([])
-  }
-
-  console.log("productVariants")
-  console.log(productVariants)
+    setSelectedSizes([]);
+    setSelectedColors([]);
+  };
 
   return (
     <div>
@@ -58,7 +84,7 @@ export default function CategoryPage({ data }: CategoryPageProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {sizes.map((size) => (
+            {availableSizes.map((size) => (
               <DropdownMenuCheckboxItem
                 key={size.id}
                 checked={selectedSizes.includes(size.label)}
@@ -78,7 +104,7 @@ export default function CategoryPage({ data }: CategoryPageProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {colors.map((color) => (
+            {availableColors.map((color) => (
               <DropdownMenuCheckboxItem
                 key={color.id}
                 checked={selectedColors.includes(color.name)}
@@ -97,11 +123,9 @@ export default function CategoryPage({ data }: CategoryPageProps) {
         )}
       </div>
 
-      
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredProducts.filter((product) => productVariants.map((pv) => pv.product_id).includes(product.id)).map((product) => (
-          <ProductCard key={product.id} product={product} productVariants={productVariants.filter((pv) => pv.product_id === product.id)} sizes={sizes} colors={colors} categories={categories}/>
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
@@ -115,5 +139,5 @@ export default function CategoryPage({ data }: CategoryPageProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

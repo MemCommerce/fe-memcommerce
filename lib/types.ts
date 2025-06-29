@@ -42,7 +42,7 @@ type ProductBase = {
     name: string;
     brand: string;
     description: string;
-    category_id: string;
+    category_name: string;
 }
 
 export type ProductData = ProductBase
@@ -70,4 +70,28 @@ export type FetchedData = {
   colors: Color[]
   sizes: Size[]
   productVariants: ProductVariant[]
+}
+
+export type StorefrontVariant = {
+    id: string;
+    size: string;
+    size_id: string;
+    color: string;
+    color_hex: string;
+    color_id: string;
+    price: number;
+    image_url: string;
+}
+
+export type StorefrontProduct = {
+    id: string;
+    name: string;
+    brand: string;
+    description: string;
+    category_name: string;
+    variants: StorefrontVariant[];
+}
+
+export type StorefrontData = {
+    products: StorefrontProduct[]
 }

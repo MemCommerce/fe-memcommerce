@@ -1,13 +1,9 @@
-import { Category, Color, FetchedData, Product, ProductVariant, Size } from "./types";
+import { Category, Color, Product, ProductVariant, Size, StorefrontProduct } from "./types";
 
 export interface CategoryPageProps {
-  data: FetchedData;
+  products: StorefrontProduct[];
 }
 
 export interface ProductCardProps {
-  product: Product;
-  productVariants: ProductVariant[];
-  sizes: Size[];
-  colors: Color[];
-  categories: Category[];
+  product: StorefrontProduct;
 }
