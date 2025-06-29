@@ -1,35 +1,36 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
-import { useState } from "react"
-import { useCart } from "@/lib/hooks/useCart"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useCart } from "@/lib/hooks/useCart";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity } = useCart()
+  const { cart, removeFromCart, updateQuantity } = useCart();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     address: "",
     city: "",
     country: "",
-  })
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    alert("Order placed! (This would connect to a payment processor in a real app)")
-  }
+    e.preventDefault();
+    alert("Order placed! (This would connect to a payment processor in a real app)");
+  };
 
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -42,19 +43,19 @@ export default function CartPage() {
               <h2 className="text-xl font-medium text-gray-600">Your cart is empty</h2>
               <p className="mt-2 text-gray-500">Add some products to your cart to see them here.</p>
               <Button className="mt-4" asChild>
-                <a href="/">Continue Shopping</a>
+                <Link href="/">Continue Shopping</Link>
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
               {cart.map((item) => (
                 <div
-                  key={`${item.id}-${item.selectedSize}-${item.selectedColor}`}
+                  key={`${item.id}-${item.size}-${item.color}`}
                   className="flex items-center gap-4 p-4 border rounded-lg"
                 >
                   <div className="w-20 h-20 relative flex-shrink-0">
                     <Image
-                      src={item.image || "/placeholder.svg"}
+                      src={item.image_url || "/placeholder.svg"}
                       alt={item.name}
                       fill
                       className="object-cover rounded-md"
@@ -63,7 +64,7 @@ export default function CartPage() {
                   <div className="flex-grow">
                     <h3 className="font-medium">{item.name}</h3>
                     <p className="text-sm text-gray-500">
-                      Size: {item.selectedSize}, Color: {item.selectedColor}
+                      Size: {item.size}, Color: {item.color}
                     </p>
                     <div className="flex items-center mt-2">
                       <button
@@ -134,5 +135,5 @@ export default function CartPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

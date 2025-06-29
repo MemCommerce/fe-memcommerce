@@ -23,13 +23,12 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    const selectedSize = selectedProductVariant.size
-    const selectedColor = selectedProductVariant.color
-
     addToCart({
       ...product,
-      selectedSize,
-      selectedColor,
+      size: selectedProductVariant.size,
+      color: selectedProductVariant.color,
+      price: selectedProductVariant.price,
+      image_url: selectedProductVariant.image_url,
       quantity: 1,
     });
   };

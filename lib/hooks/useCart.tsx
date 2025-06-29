@@ -39,8 +39,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existingItemIndex = prevCart.findIndex(
         (cartItem) =>
           cartItem.id === item.id &&
-          cartItem.selectedSize === item.selectedSize &&
-          cartItem.selectedColor === item.selectedColor,
+          cartItem.size === item.size &&
+          cartItem.color === item.color,
       )
 
       if (existingItemIndex !== -1) {
@@ -61,8 +61,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         (cartItem) =>
           !(
             cartItem.id === item.id &&
-            cartItem.selectedSize === item.selectedSize &&
-            cartItem.selectedColor === item.selectedColor
+            cartItem.size === item.size &&
+            cartItem.color === item.color
           ),
       ),
     )
@@ -72,8 +72,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart((prevCart) =>
       prevCart.map((cartItem) =>
         cartItem.id === item.id &&
-        cartItem.selectedSize === item.selectedSize &&
-        cartItem.selectedColor === item.selectedColor
+        cartItem.size === item.size &&
+        cartItem.color === item.color
           ? { ...cartItem, quantity }
           : cartItem,
       ),

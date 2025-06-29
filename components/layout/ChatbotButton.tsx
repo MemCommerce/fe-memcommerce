@@ -29,7 +29,7 @@ export default function ChatbotButton() {
               Hello! How can I help you with your shopping today?
             </div>
             <div className="flex justify-end">
-              <div className="bg-black text-white p-3 rounded-lg mb-2 max-w-[80%]">I'm looking for summer clothes</div>
+              <div className="bg-black text-white p-3 rounded-lg mb-2 max-w-[80%]">I&apos;m looking for summer clothes</div>
             </div>
             <div className="bg-gray-200 p-3 rounded-lg max-w-[80%]">
               Great! We have a fantastic collection of summer clothes. Would you like to see our t-shirts, shorts, or

@@ -167,7 +167,7 @@ export default function ProductDetailPage({ params }) {
             <h3 className="font-medium mb-2">Product Details</h3>
             <p className="text-sm text-gray-600">
               This premium {product.name.toLowerCase()} is designed for comfort and style. Made with high-quality
-              materials, it's perfect for everyday wear and special occasions. The {product.category} collection
+              materials, it&apos;s perfect for everyday wear and special occasions. The {product.category} collection
               features modern designs that are both trendy and timeless.
             </p>
           </div>

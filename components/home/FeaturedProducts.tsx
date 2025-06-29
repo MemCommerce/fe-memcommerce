@@ -1,9 +1,9 @@
-"use client"
-import { products } from "@/lib/data"
-import ProductCard from "@/components/shared/ProductCard"
+"use client";
+
+import ProductCard from "@/components/shared/ProductCard";
 
 export default function FeaturedProducts() {
-  const featuredProducts = products.slice(0, 6)
+  const featuredProducts = products.slice(0, 6);
 
   return (
     <section id="featured-products" className="container mx-auto px-4">
@@ -15,5 +15,5 @@ export default function FeaturedProducts() {
         ))}
       </div>
     </section>
-  )
+  );
 }

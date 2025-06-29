@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function Footer() {
   return (
@@ -20,29 +21,29 @@ export default function Footer() {
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-gray-300 hover:text-white">
+                <Link href="/" className="text-gray-300 hover:text-white">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/men" className="text-gray-300 hover:text-white">
+                <Link href="/men" className="text-gray-300 hover:text-white">
                   Men
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/women" className="text-gray-300 hover:text-white">
+                <Link href="/women" className="text-gray-300 hover:text-white">
                   Women
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/kids" className="text-gray-300 hover:text-white">
+                <Link href="/kids" className="text-gray-300 hover:text-white">
                   Kids
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/cart" className="text-gray-300 hover:text-white">
+                <Link href="/cart" className="text-gray-300 hover:text-white">
                   Cart
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

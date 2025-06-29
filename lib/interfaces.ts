@@ -1,4 +1,4 @@
-import { Category, Color, Product, ProductVariant, Size, StorefrontProduct } from "./types";
+import { StorefrontProduct } from "./types";
 
 export interface CategoryPageProps {
   products: StorefrontProduct[];

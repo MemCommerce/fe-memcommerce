@@ -50,7 +50,7 @@ export default function CategoryPage({ products }: CategoryPageProps) {
   }, []);
 
   // Filter products based on selected filters
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = products.filter(() => {
     const sizeMatch = selectedSizes.length === 0;
     // || product?.sizes.some((size) => selectedSizes.includes(size))
 
