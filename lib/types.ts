@@ -97,3 +97,22 @@ export type CartItem = {
   size: string;
   color: string;
 };
+
+type MessageBase = {
+  role: string;
+  content: string;
+};
+
+export type MessageData = MessageBase & {
+  id: string
+}
+
+type MessageResponse = {
+  id: string;
+  content: string;
+};
+
+export type ChatResponse = {
+  conversation_id: string;
+  messages: MessageResponse[];
+};
