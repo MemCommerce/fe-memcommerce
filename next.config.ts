@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
         pathname: '/memcommercestorage/**',
       },
     ],
+    unoptimized: true,
   },
 };
 
