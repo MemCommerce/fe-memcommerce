@@ -5,15 +5,15 @@ import Link from "next/link"
 import Image from "next/image"
 import { ShoppingCart, Menu, X, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCart } from "@/lib/hooks/useCart"
+import { useCart } from "@/hooks/useCart"
 import AuthContext from "@/context/AuthContext"
 
 export default function Header() {
-  const { cart } = useCart()
+  const { cartLineItems } = useCart()
   const { token } = useContext(AuthContext)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const totalItems = cartLineItems.length
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">

@@ -1,17 +1,19 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { useCart } from "@/lib/hooks/useCart";
+import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import AuthContext from "@/context/AuthContext";
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity } = useCart();
+  const { token } = useContext(AuthContext);
+  const { cartLineItems, removeFromCart, updateQuantity } = useCart();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -30,7 +32,15 @@ export default function CartPage() {
     alert("Order placed! (This would connect to a payment processor in a real app)");
   };
 
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const handleChangeQuantity = (cartLineItemId: string, newQuantity: number) => {
+    if (newQuantity < 1) {
+      removeFromCart(cartLineItemId, token!);
+    } else {
+      updateQuantity(cartLineItemId, newQuantity, token!);
+    }
+  };
+
+  const subtotal = cartLineItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -38,7 +48,7 @@ export default function CartPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {cart.length === 0 ? (
+          {cartLineItems.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <h2 className="text-xl font-medium text-gray-600">Your cart is empty</h2>
               <p className="mt-2 text-gray-500">Add some products to your cart to see them here.</p>
@@ -48,11 +58,8 @@ export default function CartPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {cart.map((item) => (
-                <div
-                  key={`${item.id}-${item.size}-${item.color}`}
-                  className="flex items-center gap-4 p-4 border rounded-lg"
-                >
+              {cartLineItems.map((item) => (
+                <div key={`${item.id}`} className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="w-20 h-20 relative flex-shrink-0">
                     <Image
                       src={item.image_url || "/placeholder.svg"}
@@ -63,12 +70,12 @@ export default function CartPage() {
                   </div>
                   <div className="flex-grow">
                     <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm text-gray-500">
+                    {/* <p className="text-sm text-gray-500">
                       Size: {item.size}, Color: {item.color}
-                    </p>
+                    </p> */}
                     <div className="flex items-center mt-2">
                       <button
-                        onClick={() => updateQuantity(item, Math.max(1, item.quantity - 1))}
+                        onClick={() => handleChangeQuantity(item.id, item.quantity - 1)}
                         className="w-8 h-8 flex items-center justify-center border rounded-l-md"
                       >
                         -
@@ -77,7 +84,7 @@ export default function CartPage() {
                         {item.quantity}
                       </span>
                       <button
-                        onClick={() => updateQuantity(item, item.quantity + 1)}
+                        onClick={() => handleChangeQuantity(item.id, item.quantity + 1)}
                         className="w-8 h-8 flex items-center justify-center border rounded-r-md"
                       >
                         +
@@ -86,7 +93,7 @@ export default function CartPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
-                    <button onClick={() => removeFromCart(item)} className="text-sm text-red-500 mt-2">
+                    <button onClick={() => removeFromCart(item.id, token!)} className="text-sm text-red-500 mt-2">
                       Remove
                     </button>
                   </div>
@@ -127,7 +134,7 @@ export default function CartPage() {
                   <Input id="country" name="country" value={formData.country} onChange={handleChange} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full" disabled={cart.length === 0}>
+              <Button type="submit" className="w-full" disabled={cartLineItems.length === 0}>
                 Place Order
               </Button>
             </form>

@@ -4,24 +4,12 @@ import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { ChevronLeft } from "lucide-react"
-import { useCart } from "@/lib/hooks/useCart"
+import { useCart } from "@/hooks/useCart"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getStorefrontProductById } from "@/app/api/storefrontApi"
-import { Size, StorefrontProduct, StorefrontVariant } from "@/lib/types"
-
-// async function fetchStoreFrontProduct(productId: string) {
-//    try {
-//       const storefrontProductData = await getStorefrontProductById(productId);
-//       const error = null;
-//       return { data: storefrontProductData, error };
-//     } catch (e) {
-//       const error = e instanceof Error ? e.message : String(e);
-//       const data: StorefrontProduct = {};
-//       return { data, error };
-//     }
-// }
-
+import { CartLineItemData, Size, StorefrontProduct, StorefrontVariant } from "@/lib/types"
+import AuthContext from "@/context/AuthContext"
 
 export default function ProductDetailPage({params}: {params: Promise<{ id: string }>}) {
   const router = useRouter()
@@ -30,6 +18,7 @@ export default function ProductDetailPage({params}: {params: Promise<{ id: strin
   const [quantity, setQuantity] = useState(1)
   const { addToCart } = useCart()
   const { id } = use(params)
+  const { token } = use(AuthContext)
 
   useEffect(() => {
     (async () => {
@@ -62,19 +51,20 @@ export default function ProductDetailPage({params}: {params: Promise<{ id: strin
   // Find related products (same category)
   // const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4)
 
-  const handleAddToCart = () => {
-    addToCart({
-      ...product,
-      size: selectedProductVariant.size,
-      color: selectedProductVariant.color,
-      price: selectedProductVariant.price,
-      image_url: selectedProductVariant.image_url,
-      quantity: 1,
-    });
-
-    // Show confirmation
-    alert("Product added to cart!")
-  }
+    const handleAddToCart = () => {
+      if (!token) {
+        alert("Please log in to add items to your cart.");
+        return;
+      }
+  
+      const cartItem: CartLineItemData = {
+        product_variant_id: selectedProductVariant.id,
+        quantity: quantity,
+        price: selectedProductVariant.price,
+        name: product.name,
+      }
+      addToCart(cartItem, token);
+    };
 
    const handleSizeChange = (value: string) => {
     const newPvState = product.variants.find((pv) => pv.size_id === value)!

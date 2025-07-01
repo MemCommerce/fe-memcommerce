@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useCart } from "@/lib/hooks/useCart";
+import { useCart } from "@/hooks/useCart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { ProductCardProps } from "@/lib/interfaces";
-import { Size } from "@/lib/types";
+import { CartLineItemData, Size } from "@/lib/types";
+import AuthContext from "@/context/AuthContext";
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { token } = useContext(AuthContext);
   const [selectedProductVariant, setSelectedProductVariant] = useState(product.variants[0])
   const availableSizes: Size[] = product.variants.reduce<Size[]>((acc, variant) => {
     if (acc.map((s) => s.id).includes(variant.size_id)) return acc
@@ -23,14 +25,18 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    addToCart({
-      ...product,
-      size: selectedProductVariant.size,
-      color: selectedProductVariant.color,
+    if (!token) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+
+    const cartItem: CartLineItemData = {
+      product_variant_id: selectedProductVariant.id,
       price: selectedProductVariant.price,
-      image_url: selectedProductVariant.image_url,
       quantity: 1,
-    });
+      name: product.name,
+    }
+    addToCart(cartItem, token);
   };
 
   const handleSizeChange = (value: string) => {

@@ -1,3 +1,5 @@
+import { CartStatusEnum } from "./enums";
+
 type CategoryBase = {
   name: string;
   description: string;
@@ -88,24 +90,14 @@ export type StorefrontData = {
   products: StorefrontProduct[];
 };
 
-export type CartItem = {
-  id: string;
-  price: number;
-  quantity: number;
-  image_url: string;
-  name: string;
-  size: string;
-  color: string;
-};
-
 type MessageBase = {
   role: string;
   content: string;
 };
 
 export type MessageData = MessageBase & {
-  id: string
-}
+  id: string;
+};
 
 type MessageResponse = {
   id: string;
@@ -115,4 +107,28 @@ type MessageResponse = {
 export type ChatResponse = {
   conversation_id: string;
   messages: MessageResponse[];
+};
+
+type CartBase = {
+  status: CartStatusEnum;
+};
+
+export type Cart = CartBase & {
+  id: string;
+  user_id: string;
+};
+
+type CartLineItemBase = {
+  product_variant_id: string;
+  quantity: number;
+  price: number;
+  name: string;
+};
+
+export type CartLineItemData = CartLineItemBase;
+
+export type CartLineItem = CartLineItemBase & {
+  id: string;
+  cart_id: string;
+  image_url?: string;
 };
