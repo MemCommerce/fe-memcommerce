@@ -9,4 +9,6 @@ export const SIZES_URL = `${API_URL}/sizes/`;
 export const PRODUCTS_URL = `${API_URL}/products/`;
 export const PRODUCT_VARIANTS_URL = `${API_URL}/product-variants/`;
 export const STOREFRONT_URL = `${API_URL}/storefront/`;
+export const AUTH_URL = `${API_URL}/auth/`;
+
 export const AI_CHAT_URL = `${CUSTOMER_AGENT_URL}/chat`

@@ -1,14 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Link from "next/link"
-import { ShoppingCart, Menu, X } from "lucide-react"
+import Image from "next/image"
+import { ShoppingCart, Menu, X, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/hooks/useCart"
-import Image from "next/image"
+import AuthContext from "@/context/AuthContext"
 
 export default function Header() {
   const { cart } = useCart()
+  const { token } = useContext(AuthContext)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
@@ -37,7 +39,19 @@ export default function Header() {
             </Link>
           </nav>
 
-          <div className="flex items-center">
+          <div className="flex items-center space-x-4">
+            {!token ? (
+              <Link href="/login" className="text-gray-700 hover:text-gray-900">
+                <User className="h-6 w-6" />
+              </Link>
+            ) : (
+              <Link href="/account" className="text-gray-700 hover:text-gray-900">
+                <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-200">
+                  <User className="h-5 w-5" />
+                </span>
+              </Link>
+            )}
+
             <Link href="/cart" className="relative">
               <ShoppingCart className="h-6 w-6 text-gray-700" />
               {totalItems > 0 && (
@@ -50,7 +64,7 @@ export default function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="ml-4 md:hidden"
+              className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <Menu className="h-6 w-6" />
@@ -84,6 +98,14 @@ export default function Header() {
               </Link>
               <Link href="/kids" className="text-lg font-medium" onClick={() => setMobileMenuOpen(false)}>
                 Kids
+              </Link>
+              <Link
+                href="/login"
+                className="text-lg font-medium flex items-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <User className="h-5 w-5 mr-2" />
+                Login
               </Link>
               <Link
                 href="/cart"
