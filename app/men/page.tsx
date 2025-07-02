@@ -2,6 +2,7 @@ import CategoryPage from "@/components/category/CategoryPage";
 import { StorefrontData } from "@/lib/types";
 import { getStorefrontData } from "../api/storefrontApi";
 
+export const revalidate = 60;
 
 async function fetchStorefrontData() {
   try {
@@ -18,7 +19,7 @@ async function fetchStorefrontData() {
 export default async function MenPage() {
   const { data, error } = await fetchStorefrontData();
 
-  console.log(data)
+  console.log(data);
 
   if (error || !data) {
     return (
