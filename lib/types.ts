@@ -1,4 +1,4 @@
-import { CartStatusEnum } from "./enums";
+import { CartStatusEnum, OrderStatusEnum } from "./enums";
 
 type CategoryBase = {
   name: string;
@@ -132,3 +132,38 @@ export type CartLineItem = CartLineItemBase & {
   cart_id: string;
   image_url?: string;
 };
+
+type OrderBase = {
+  full_name: string;
+  email: string;
+  address: string;
+  city: string;
+  country: string;
+  status: OrderStatusEnum;
+};
+
+export type OrderData = OrderBase;
+
+export type Order = OrderBase & {
+  id: string;
+};
+
+type OrderItemBase = {
+  product_variant_id: string;
+  quantity: number;
+  price: number; 
+  name: string;
+};
+
+export type OrderItemData = OrderItemBase;
+
+export type OrderItem = OrderItemBase & {
+  id: string;
+  order_id: string;
+  image_url?: string;
+};
+
+export type OrderWithItems = {
+  order: Order;
+  order_items: OrderItem[];
+}

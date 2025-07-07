@@ -4,32 +4,50 @@ import type React from "react";
 import { useContext, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthContext from "@/context/AuthContext";
+import { postOrder } from "../api/orderApi";
+import { OrderData } from "@/lib/types";
+import { OrderStatusEnum } from "@/lib/enums";
+
+const initialFormState: OrderData = {
+  full_name: "",
+  email: "",
+  address: "",
+  city: "",
+  country: "",
+  status: OrderStatusEnum.PENDING,
+};
 
 export default function CartPage() {
   const { token } = useContext(AuthContext);
   const { cartLineItems, removeFromCart, updateQuantity } = useCart();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    address: "",
-    city: "",
-    country: "",
-  });
+  const router = useRouter();
+  const [formData, setFormData] = useState(initialFormState);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Order placed! (This would connect to a payment processor in a real app)");
+    setIsLoading(true);
+    try {
+      const order = await postOrder(formData, token!);
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cartLineItems");
+      router.push(`/order/${order.id}`);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
+    }
   };
 
   const handleChangeQuantity = (cartLineItemId: string, newQuantity: number) => {
@@ -77,6 +95,8 @@ export default function CartPage() {
                       <button
                         onClick={() => handleChangeQuantity(item.id, item.quantity - 1)}
                         className="w-8 h-8 flex items-center justify-center border rounded-l-md"
+                        disabled={isLoading}
+                        type="button"
                       >
                         -
                       </button>
@@ -93,7 +113,12 @@ export default function CartPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
-                    <button onClick={() => removeFromCart(item.id, token!)} className="text-sm text-red-500 mt-2">
+                    <button
+                      onClick={() => removeFromCart(item.id, token!)}
+                      className="text-sm text-red-500 mt-2"
+                      type="button"
+                      disabled={isLoading}
+                    >
                       Remove
                     </button>
                   </div>
@@ -113,8 +138,8 @@ export default function CartPage() {
             <h2 className="text-xl font-bold mb-4">Order Information</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
+                <Label htmlFor="full_name">Full Name</Label>
+                <Input id="full_name" name="full_name" value={formData.full_name} onChange={handleChange} required />
               </div>
               <div>
                 <Label htmlFor="email">Email</Label>
@@ -134,7 +159,7 @@ export default function CartPage() {
                   <Input id="country" name="country" value={formData.country} onChange={handleChange} required />
                 </div>
               </div>
-              <Button type="submit" className="w-full" disabled={cartLineItems.length === 0}>
+              <Button type="submit" className="w-full" disabled={cartLineItems.length === 0 || isLoading}>
                 Place Order
               </Button>
             </form>
