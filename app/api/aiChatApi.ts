@@ -1,7 +1,7 @@
 import { ChatResponse, MessageData } from "@/lib/types";
 import { AI_CHAT_URL } from "@/lib/urls";
 
-export const postChatMessage = async (message: MessageData, conversationId: string | null): Promise<ChatResponse> => {
+export const postChatMessage = async (message: MessageData, conversationId: string | null, token: string | null): Promise<ChatResponse> => {
   const postBody = {
     message: message.content,
     conversation_id: conversationId
@@ -11,6 +11,7 @@ export const postChatMessage = async (message: MessageData, conversationId: stri
     body: JSON.stringify(postBody),
     headers: {
       "Content-Type": "application/json",
+      ...{ Authorization: token ? `Bearer ${token}` : ""  }
     },
   });
   const data: ChatResponse = await resp.json();

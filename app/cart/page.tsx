@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthContext from "@/context/AuthContext";
-import { postOrder } from "../api/orderApi";
 import { OrderData } from "@/lib/types";
 import { OrderStatusEnum } from "@/lib/enums";
 
@@ -26,7 +25,7 @@ const initialFormState: OrderData = {
 
 export default function CartPage() {
   const { token } = useContext(AuthContext);
-  const { cartLineItems, removeFromCart, updateQuantity } = useCart();
+  const { cartLineItems, removeFromCart, updateQuantity, finishCart } = useCart();
   const router = useRouter();
   const [formData, setFormData] = useState(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,9 +39,7 @@ export default function CartPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const order = await postOrder(formData, token!);
-      localStorage.removeItem("cart");
-      localStorage.removeItem("cartLineItems");
+      const order = await finishCart(formData, token!);
       router.push(`/order/${order.id}`);
     } catch (error) {
       console.error("Error placing order:", error);

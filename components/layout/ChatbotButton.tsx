@@ -1,12 +1,13 @@
 "use client";
 
 import type React from "react";
-import { useState, type ChangeEvent } from "react";
+import { use, useState, type ChangeEvent } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MessageData } from "@/lib/types";
 import { postChatMessage } from "@/app/api/aiChatApi";
+import AuthContext from "@/context/AuthContext";
 
 export default function ChatbotButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +15,8 @@ export default function ChatbotButton() {
   const [text, setText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-
+  const { token } = use(AuthContext);
+ 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setText(value);
@@ -29,7 +31,7 @@ export default function ChatbotButton() {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
     setText("");
-    const chatResponse = await postChatMessage(userMessage, conversationId);
+    const chatResponse = await postChatMessage(userMessage, conversationId, token);
     if (!conversationId) {
       setConversationId(chatResponse.conversation_id);
     }

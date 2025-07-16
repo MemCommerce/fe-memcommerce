@@ -8,8 +8,9 @@ import {
   postCart,
   patchCartStatus,
 } from "@/app/api/cartApi";
-import { Cart, CartLineItem, CartLineItemData } from "@/lib/types";
+import { Cart, CartLineItem, CartLineItemData, Order, OrderData } from "@/lib/types";
 import { CartStatusEnum } from "@/lib/enums";
+import { postOrder } from "@/app/api/orderApi";
 
 interface CartContextType {
   cart: Cart | null;
@@ -19,6 +20,7 @@ interface CartContextType {
   addToCart: (item: CartLineItemData, token: string) => void;
   removeFromCart: (cartLineItemId: string, token: string) => void;
   updateQuantity: (cartLineItemId: string, quantity: number, token: string) => void;
+  finishCart: (orderData: OrderData, token: string) => Promise<Order>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -101,6 +103,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const finishCart = async (orderData: OrderData , token: string) => {
+    const order = await postOrder(orderData, token);
+    if (order.id) {
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cartLineItems");
+      setCart(null)
+      setCartLineItems([])
+    }
+    return order;
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -111,6 +124,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        finishCart,
       }}
     >
       {children}
