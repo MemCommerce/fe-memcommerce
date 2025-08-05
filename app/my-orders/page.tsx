@@ -1,8 +1,8 @@
 "use client";
 
+import { use, useEffect, useState } from "react";
 import AuthContext from "@/context/AuthContext";
 import { OrderWithItems } from "@/lib/types";
-import { use, useEffect, useState } from "react";
 import { getUserOrders } from "../api/orderApi";
 
 export default function MyOrdersPage() {

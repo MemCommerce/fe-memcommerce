@@ -3,8 +3,14 @@
 import { useContext, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ShoppingCart, Menu, X, User } from "lucide-react"
+import { ShoppingCart, Menu, X, User, Package, UserCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useCart } from "@/hooks/useCart"
 import AuthContext from "@/context/AuthContext"
 
@@ -45,11 +51,29 @@ export default function Header() {
                 <User className="h-6 w-6" />
               </Link>
             ) : (
-              <Link href="/account" className="text-gray-700 hover:text-gray-900">
-                <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-200">
-                  <User className="h-5 w-5" />
-                </span>
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="text-gray-700 hover:text-gray-900 focus:outline-none">
+                    <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors">
+                      <User className="h-5 w-5" />
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/my-orders" className="flex items-center cursor-pointer">
+                      <Package className="h-4 w-4 mr-2" />
+                      My Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="flex items-center cursor-pointer">
+                      <UserCircle className="h-4 w-4 mr-2" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
 
             <Link href="/cart" className="relative">
@@ -99,14 +123,35 @@ export default function Header() {
               <Link href="/kids" className="text-lg font-medium" onClick={() => setMobileMenuOpen(false)}>
                 Kids
               </Link>
-              <Link
-                href="/login"
-                className="text-lg font-medium flex items-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <User className="h-5 w-5 mr-2" />
-                Login
-              </Link>
+              {!token ? (
+                <Link
+                  href="/login"
+                  className="text-lg font-medium flex items-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <User className="h-5 w-5 mr-2" />
+                  Login
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/orders"
+                    className="text-lg font-medium flex items-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Package className="h-5 w-5 mr-2" />
+                    My Orders
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="text-lg font-medium flex items-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <UserCircle className="h-5 w-5 mr-2" />
+                    Profile
+                  </Link>
+                </>
+              )}
               <Link
                 href="/cart"
                 className="text-lg font-medium flex items-center"
