@@ -1,25 +1,29 @@
-"use client"
+"use client";
 
-import { useContext, useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { ShoppingCart, Menu, X, User, Package, UserCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useContext, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ShoppingCart, Menu, X, User, Package, UserCircle, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useCart } from "@/hooks/useCart"
-import AuthContext from "@/context/AuthContext"
+} from "@/components/ui/dropdown-menu";
+import { useCart } from "@/hooks/useCart";
+import AuthContext from "@/context/AuthContext";
 
 export default function Header() {
-  const { cartLineItems } = useCart()
-  const { token } = useContext(AuthContext)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { cartLineItems } = useCart();
+  const { token, logOut } = useContext(AuthContext);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const totalItems = cartLineItems.length
+  const totalItems = cartLineItems.length;
+
+  const handleLogout = () => {
+    logOut();
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -71,6 +75,12 @@ export default function Header() {
                       <UserCircle className="h-4 w-4 mr-2" />
                       Profile
                     </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <button onClick={handleLogout} className="flex items-center cursor-pointer w-full text-left">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -165,5 +175,5 @@ export default function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }

@@ -182,3 +182,8 @@ export type ReviewData = ReviewBase & {
 export type Review = ReviewData & {
   id: string;
 }
+
+export type Tokens = {
+  access_token: string;
+  refresh_token: string;
+}

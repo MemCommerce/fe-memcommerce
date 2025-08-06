@@ -6,18 +6,19 @@ import AuthContext from '@/context/AuthContext';
 
 const GoogleAuthContent = () => {
     const searchParams = useSearchParams();
-    const token = searchParams.get('token');
+    const accessToken = searchParams.get('access_token');
+    const refreshToken = searchParams.get('refresh_token');
     const { login } = useContext(AuthContext);
 
     useEffect(() => {
-        if (token) {
-            login(token);
+        if (accessToken && refreshToken) {
+            login(accessToken, refreshToken);
         }
-    }, [token, login]);
+    }, [accessToken, refreshToken, login]);
 
     return (
         <div>
-            {token ? (
+            {accessToken ? (
                 <p>Authenticating...</p>
             ) : (
                 <p>No token found in URL.</p>

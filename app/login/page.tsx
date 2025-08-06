@@ -7,7 +7,12 @@ import { loginWithGoogle } from "@/app/api/auth";
 
 export default function LoginPage() {
   const handleGoogleSignIn = async () => {
-    const data = await loginWithGoogle();
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const fullBaseUrl = `${protocol}//${host}`;
+    const returnUrl = `${fullBaseUrl}/google-auth`
+
+    const data = await loginWithGoogle(returnUrl);
     if (data) {
       window.location.href = data;
     } else {
