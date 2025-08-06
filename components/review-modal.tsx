@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Star } from 'lucide-react';
+import { Star } from "lucide-react";
 import { ReviewData } from "@/lib/types";
 
 interface ReviewModalProps {
@@ -15,6 +15,7 @@ interface ReviewModalProps {
   onSubmit: (reviewData: ReviewData) => Promise<void>;
   productName: string;
   productVariantId?: string;
+  orderItemId: string;
   existingReview?: ReviewData;
   isEditing?: boolean;
 }
@@ -25,8 +26,9 @@ export function ReviewModal({
   onSubmit,
   productName,
   productVariantId,
+  orderItemId,
   existingReview,
-  isEditing = false
+  isEditing = false,
 }: ReviewModalProps) {
   const [rating, setRating] = useState(existingReview?.rating || 0);
   const [title, setTitle] = useState(existingReview?.title || "");
@@ -44,13 +46,14 @@ export function ReviewModal({
         rating,
         title: title.trim(),
         content: content.trim(),
-        product_variant_id: productVariantId!
+        product_variant_id: productVariantId!,
+        order_item_id: orderItemId,
       };
 
       await onSubmit(reviewData);
       handleClose();
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error("Error submitting review:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -68,9 +71,7 @@ export function ReviewModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? 'Edit Review' : 'Add Review'}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "Edit Review" : "Add Review"}</DialogTitle>
           <p className="text-sm text-gray-600">{productName}</p>
         </DialogHeader>
 
@@ -89,15 +90,13 @@ export function ReviewModal({
                 >
                   <Star
                     className={`h-6 w-6 ${
-                      star <= (hoveredRating || rating)
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-300'
+                      star <= (hoveredRating || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
                     }`}
                   />
                 </button>
               ))}
               <span className="ml-2 text-sm text-gray-600">
-                {rating > 0 && `${rating} star${rating !== 1 ? 's' : ''}`}
+                {rating > 0 && `${rating} star${rating !== 1 ? "s" : ""}`}
               </span>
             </div>
           </div>
@@ -130,19 +129,11 @@ export function ReviewModal({
           </div>
 
           <DialogFooter className="gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              disabled={isSubmitting}
-            >
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={rating === 0 || isSubmitting}
-            >
-              {isSubmitting ? 'Submitting...' : (isEditing ? 'Update Review' : 'Submit Review')}
+            <Button type="submit" disabled={rating === 0 || isSubmitting}>
+              {isSubmitting ? "Submitting..." : isEditing ? "Update Review" : "Submit Review"}
             </Button>
           </DialogFooter>
         </form>

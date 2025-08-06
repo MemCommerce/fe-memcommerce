@@ -87,16 +87,10 @@ export default function MyOrdersPage() {
   };
 
   const handleEditReview = (item: OrderItem) => {
-    const dummyReview: ReviewData = {
-      title: "",
-      content: "",
-      rating: 5,
-      product_variant_id: item.id
-    }
     setReviewModal({
       isOpen: true,
       productName: item.name,
-      existingReview: dummyReview, // Assuming review data is attached to item
+      existingReview: item.review, 
       isEditing: true,
       itemId: item.id
     });
@@ -287,12 +281,12 @@ export default function MyOrdersPage() {
                           </div>
                           {order.status === 'delivered' && (
                             <Button
-                              variant={item.reviewed ? "outline" : "default"}
+                              variant={item.review ? "outline" : "default"}
                               size="sm"
-                              onClick={() => item.reviewed ? handleEditReview(item) : handleAddReview(item)}
+                              onClick={() => item.review ? handleEditReview(item) : handleAddReview(item)}
                               className="flex items-center gap-1"
                             >
-                              {item.reviewed ? (
+                              {item.review ? (
                                 <>
                                   <Edit3 className="h-3 w-3" />
                                   Edit Review
@@ -322,6 +316,7 @@ export default function MyOrdersPage() {
           onSubmit={handleReviewSubmit}
           productName={reviewModal.productName}
           productVariantId={reviewModal.productVariantId}
+          orderItemId={reviewModal.itemId}
           existingReview={reviewModal.existingReview}
           isEditing={reviewModal.isEditing}
         />

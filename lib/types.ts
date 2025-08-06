@@ -161,7 +161,7 @@ export type OrderItem = OrderItemBase & {
   id: string;
   order_id: string;
   image_url?: string;
-  reviewed?: boolean;
+  review?: Review;
 };
 
 export type OrderWithItems = {
@@ -177,6 +177,7 @@ type ReviewBase = {
 
 export type ReviewData = ReviewBase & {
   product_variant_id: string;
+  order_item_id: string;
 }
 
 export type Review = ReviewData & {

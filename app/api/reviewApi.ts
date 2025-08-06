@@ -10,6 +10,11 @@ export const postReview = async (data: ReviewData, token: string): Promise<Revie
     },
     body: JSON.stringify(data)
   })
+  if (!resp.ok) {
+    const errorData = await resp.json()
+    console.error(errorData)
+    throw Error(errorData)
+  }
   const respData: Review = await resp.json()
   return respData
 }
