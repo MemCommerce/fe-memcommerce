@@ -3,14 +3,14 @@
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import AuthContext from "@/context/AuthContext";
-import { OrderWithItems, ReviewData } from "@/lib/types";
+import { OrderItem, OrderWithItems, ReviewData } from "@/lib/types";
 import { getUserOrders } from "../api/orderApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { Package, MapPin, Mail, User, Calendar, ShoppingBag, AlertCircle, MessageSquare, Edit3 } from 'lucide-react';
+import { Package, MapPin, Mail, User, ShoppingBag, AlertCircle, MessageSquare, Edit3 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { ReviewModal } from "@/components/review-modal";
 import { postReview, putReview } from "../api/reviewApi";
@@ -24,7 +24,7 @@ export default function MyOrdersPage() {
     isOpen: boolean;
     productName: string;
     productVariantId?: string;
-    existingReview?: any;
+    existingReview?: ReviewData;
     isEditing: boolean;
     itemId: string;
   } | null>(null);
@@ -64,19 +64,19 @@ export default function MyOrdersPage() {
     }
   };
 
-  const calculateOrderTotal = (items: any[]) => {
+  const calculateOrderTotal = (items: OrderItem[]) => {
     return items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString('en-US', {
+  //     year: 'numeric',
+  //     month: 'long',
+  //     day: 'numeric'
+  //   });
+  // };
 
-  const handleAddReview = (item: any) => {
+  const handleAddReview = (item: OrderItem) => {
     setReviewModal({
       isOpen: true,
       productName: item.name,
@@ -86,11 +86,17 @@ export default function MyOrdersPage() {
     });
   };
 
-  const handleEditReview = (item: any) => {
+  const handleEditReview = (item: OrderItem) => {
+    const dummyReview: ReviewData = {
+      title: "",
+      content: "",
+      rating: 5,
+      product_variant_id: item.id
+    }
     setReviewModal({
       isOpen: true,
       productName: item.name,
-      existingReview: item.review, // Assuming review data is attached to item
+      existingReview: dummyReview, // Assuming review data is attached to item
       isEditing: true,
       itemId: item.id
     });
@@ -192,12 +198,12 @@ export default function MyOrdersPage() {
                       <Package className="h-5 w-5" />
                       Order #{order.id}
                     </CardTitle>
-                    {order.created_at && (
+                    {/* {order.created_at && (
                       <p className="text-sm text-gray-600 flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         {formatDate(order.created_at)}
                       </p>
-                    )}
+                    )} */}
                   </div>
                   <div className="flex items-center gap-3">
                     <Badge className={getStatusColor(order.status)}>

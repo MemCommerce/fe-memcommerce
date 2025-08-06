@@ -15,11 +15,7 @@ interface ReviewModalProps {
   onSubmit: (reviewData: ReviewData) => Promise<void>;
   productName: string;
   productVariantId?: string;
-  existingReview?: {
-    rating: number;
-    title?: string;
-    content?: string;
-  };
+  existingReview?: ReviewData;
   isEditing?: boolean;
 }
 
@@ -44,11 +40,11 @@ export function ReviewModal({
 
     setIsSubmitting(true);
     try {
-      const reviewData = {
+      const reviewData: ReviewData = {
         rating,
-        title: title.trim() || undefined,
-        content: content.trim() || undefined,
-        ...(isEditing ? {} : { product_variant_id: productVariantId! })
+        title: title.trim(),
+        content: content.trim(),
+        product_variant_id: productVariantId!
       };
 
       await onSubmit(reviewData);

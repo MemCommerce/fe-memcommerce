@@ -12,5 +12,6 @@ export const STOREFRONT_URL = `${API_URL}/storefront/`;
 export const AUTH_URL = `${API_URL}/auth/`;
 export const CART_URL = `${API_URL}/cart/`;
 export const ORDER_URL = `${API_URL}/orders/`;
+export const REVIEW_URL = `${API_URL}/reviews/`;
 
 export const AI_CHAT_URL = `${CUSTOMER_AGENT_URL}/chat`
