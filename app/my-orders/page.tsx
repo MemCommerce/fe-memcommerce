@@ -3,20 +3,31 @@
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import AuthContext from "@/context/AuthContext";
-import { OrderItem, OrderWithItems } from "@/lib/types";
+import { OrderWithItems, ReviewData } from "@/lib/types";
 import { getUserOrders } from "../api/orderApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { Package, MapPin, Mail, User, Calendar, ShoppingBag, AlertCircle } from 'lucide-react';
+import { Package, MapPin, Mail, User, Calendar, ShoppingBag, AlertCircle, MessageSquare, Edit3 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { ReviewModal } from "@/components/review-modal";
+import { postReview, putReview } from "../api/reviewApi";
 
 export default function MyOrdersPage() {
   const [ordersInfos, setOrdersInfos] = useState<OrderWithItems[]>([]);
   const { token } = use(AuthContext);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [reviewModal, setReviewModal] = useState<{
+    isOpen: boolean;
+    productName: string;
+    productVariantId?: string;
+    existingReview?: any;
+    isEditing: boolean;
+    itemId: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -53,7 +64,7 @@ export default function MyOrdersPage() {
     }
   };
 
-  const calculateOrderTotal = (items: OrderItem[]) => {
+  const calculateOrderTotal = (items: any[]) => {
     return items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
@@ -63,6 +74,50 @@ export default function MyOrdersPage() {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handleAddReview = (item: any) => {
+    setReviewModal({
+      isOpen: true,
+      productName: item.name,
+      productVariantId: item.product_variant_id || item.id, // Adjust based on your data structure
+      isEditing: false,
+      itemId: item.id
+    });
+  };
+
+  const handleEditReview = (item: any) => {
+    setReviewModal({
+      isOpen: true,
+      productName: item.name,
+      existingReview: item.review, // Assuming review data is attached to item
+      isEditing: true,
+      itemId: item.id
+    });
+  };
+
+  const handleReviewSubmit = async (reviewData: ReviewData) => {
+    if (!reviewModal || !token) return;
+
+    try {
+      if (reviewModal.isEditing) {
+        // For editing, we need the review ID - you might need to adjust this based on your data structure
+        const reviewId = 'review_id_here'; // Get this from your existing review data
+        await putReview(reviewId, reviewData as ReviewData, token);
+      } else {
+        await postReview(reviewData as ReviewData, token);
+      }
+      
+      // Refresh orders to show updated review status
+      const data = await getUserOrders(token);
+      setOrdersInfos(data);
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    }
+  };
+
+  const closeReviewModal = () => {
+    setReviewModal(null);
   };
 
   if (loading) {
@@ -218,10 +273,32 @@ export default function MyOrdersPage() {
                             <span>${item.price.toFixed(2)} each</span>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-gray-900">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </p>
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p className="font-semibold text-gray-900">
+                              ${(item.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
+                          {order.status === 'delivered' && (
+                            <Button
+                              variant={item.reviewed ? "outline" : "default"}
+                              size="sm"
+                              onClick={() => item.reviewed ? handleEditReview(item) : handleAddReview(item)}
+                              className="flex items-center gap-1"
+                            >
+                              {item.reviewed ? (
+                                <>
+                                  <Edit3 className="h-3 w-3" />
+                                  Edit Review
+                                </>
+                              ) : (
+                                <>
+                                  <MessageSquare className="h-3 w-3" />
+                                  Add Review
+                                </>
+                              )}
+                            </Button>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -231,6 +308,17 @@ export default function MyOrdersPage() {
             </Card>
           ))}
         </div>
+      )}
+      {reviewModal && (
+        <ReviewModal
+          isOpen={reviewModal.isOpen}
+          onClose={closeReviewModal}
+          onSubmit={handleReviewSubmit}
+          productName={reviewModal.productName}
+          productVariantId={reviewModal.productVariantId}
+          existingReview={reviewModal.existingReview}
+          isEditing={reviewModal.isEditing}
+        />
       )}
     </div>
   );
