@@ -7,16 +7,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Star } from "lucide-react";
-import { ReviewData } from "@/lib/types";
+import { Review, ReviewData } from "@/lib/types";
 
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (reviewData: ReviewData) => Promise<void>;
+  onSubmit: (reviewData: ReviewData, reviewId: string | null) => Promise<void>;
   productName: string;
-  productVariantId?: string;
+  productVariantId: string;
   orderItemId: string;
-  existingReview?: ReviewData;
+  existingReview?: Review;
   isEditing?: boolean;
 }
 
@@ -46,11 +46,11 @@ export function ReviewModal({
         rating,
         title: title.trim(),
         content: content.trim(),
-        product_variant_id: productVariantId!,
+        product_variant_id: productVariantId,
         order_item_id: orderItemId,
       };
 
-      await onSubmit(reviewData);
+      await onSubmit(reviewData, existingReview?.id ?? null);
       handleClose();
     } catch (error) {
       console.error("Error submitting review:", error);

@@ -3,14 +3,14 @@
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import AuthContext from "@/context/AuthContext";
-import { OrderItem, OrderWithItems, ReviewData } from "@/lib/types";
+import { OrderItem, OrderWithItems, Review, ReviewData } from "@/lib/types";
 import { getUserOrders } from "../api/orderApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { Package, MapPin, Mail, User, ShoppingBag, AlertCircle, MessageSquare, Edit3 } from 'lucide-react';
+import { Package, MapPin, Mail, User, ShoppingBag, AlertCircle, MessageSquare, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ReviewModal } from "@/components/review-modal";
 import { postReview, putReview } from "../api/reviewApi";
@@ -23,8 +23,8 @@ export default function MyOrdersPage() {
   const [reviewModal, setReviewModal] = useState<{
     isOpen: boolean;
     productName: string;
-    productVariantId?: string;
-    existingReview?: ReviewData;
+    productVariantId: string;
+    existingReview?: Review;
     isEditing: boolean;
     itemId: string;
   } | null>(null);
@@ -49,23 +49,23 @@ export default function MyOrdersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'shipped':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'delivered':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "processing":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "shipped":
+        return "bg-purple-100 text-purple-800 border-purple-200";
+      case "delivered":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "cancelled":
+        return "bg-red-100 text-red-800 border-red-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const calculateOrderTotal = (items: OrderItem[]) => {
-    return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   // const formatDate = (dateString: string) => {
@@ -82,7 +82,7 @@ export default function MyOrdersPage() {
       productName: item.name,
       productVariantId: item.product_variant_id || item.id, // Adjust based on your data structure
       isEditing: false,
-      itemId: item.id
+      itemId: item.id,
     });
   };
 
@@ -90,29 +90,29 @@ export default function MyOrdersPage() {
     setReviewModal({
       isOpen: true,
       productName: item.name,
-      existingReview: item.review, 
+      existingReview: item.review,
       isEditing: true,
-      itemId: item.id
+      itemId: item.id,
+      productVariantId: item.product_variant_id,
     });
   };
 
-  const handleReviewSubmit = async (reviewData: ReviewData) => {
+  const handleReviewSubmit = async (reviewData: ReviewData, reviewId: string | null) => {
     if (!reviewModal || !token) return;
 
     try {
-      if (reviewModal.isEditing) {
+      if (reviewId) {
         // For editing, we need the review ID - you might need to adjust this based on your data structure
-        const reviewId = 'review_id_here'; // Get this from your existing review data
         await putReview(reviewId, reviewData as ReviewData, token);
       } else {
         await postReview(reviewData as ReviewData, token);
       }
-      
+
       // Refresh orders to show updated review status
       const data = await getUserOrders(token);
       setOrdersInfos(data);
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error("Error submitting review:", error);
     }
   };
 
@@ -205,9 +205,7 @@ export default function MyOrdersPage() {
                     </Badge>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">Total</p>
-                      <p className="font-semibold text-lg">
-                        ${calculateOrderTotal(order_items).toFixed(2)}
-                      </p>
+                      <p className="font-semibold text-lg">${calculateOrderTotal(order_items).toFixed(2)}</p>
                     </div>
                   </div>
                 </div>
@@ -233,7 +231,8 @@ export default function MyOrdersPage() {
                       <div>
                         <span className="font-medium">Shipping Address:</span>
                         <p className="text-gray-600">
-                          {order.address}<br />
+                          {order.address}
+                          <br />
                           {order.city}, {order.country}
                         </p>
                       </div>
@@ -275,15 +274,13 @@ export default function MyOrdersPage() {
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="text-right">
-                            <p className="font-semibold text-gray-900">
-                              ${(item.price * item.quantity).toFixed(2)}
-                            </p>
+                            <p className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
                           </div>
-                          {order.status === 'delivered' && (
+                          {order.status === "delivered" && (
                             <Button
                               variant={item.review ? "outline" : "default"}
                               size="sm"
-                              onClick={() => item.review ? handleEditReview(item) : handleAddReview(item)}
+                              onClick={() => (item.review ? handleEditReview(item) : handleAddReview(item))}
                               className="flex items-center gap-1"
                             >
                               {item.review ? (

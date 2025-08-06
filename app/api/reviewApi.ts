@@ -29,6 +29,11 @@ export const putReview = async (reviewId: string, reviewData: ReviewData, token:
     },
     body: JSON.stringify(reviewData)
   })
+  if (!resp.ok) {
+    const errorData = await resp.json()
+    console.error(errorData)
+    throw Error(errorData)
+  }
   const data: Review = await resp.json()
   return data
 }
