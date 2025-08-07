@@ -1,4 +1,4 @@
-import { StorefrontData, StorefrontProduct } from "@/lib/types";
+import { SFProductWithReview, StorefrontData } from "@/lib/types";
 import { STOREFRONT_URL } from "@/lib/urls";
 
 export const getStorefrontData = async (): Promise<StorefrontData> => {
@@ -8,9 +8,9 @@ export const getStorefrontData = async (): Promise<StorefrontData> => {
   return data;
 };
 
-export const getStorefrontProductById = async (productId: string): Promise<StorefrontProduct> => {
+export const getStorefrontProductById = async (productId: string): Promise<SFProductWithReview> => {
   const url = `${STOREFRONT_URL}product/${productId}`;
   const resp = await fetch(url);
-  const data: StorefrontProduct = await resp.json();
+  const data: SFProductWithReview = await resp.json();
   return data;
 };

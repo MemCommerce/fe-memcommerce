@@ -86,6 +86,19 @@ export type StorefrontProduct = {
   variants: StorefrontVariant[];
 };
 
+export type StorefrontReview = {
+  id: string;
+  rating: number;
+  title: string | null;
+  content: string | null;
+  product_variant_id: string;
+  reviewer_name: string;
+};
+
+export type SFProductWithReview = StorefrontProduct & {
+  reviews: StorefrontReview[];
+};
+
 export type StorefrontData = {
   products: StorefrontProduct[];
 };
@@ -151,7 +164,7 @@ export type Order = OrderBase & {
 type OrderItemBase = {
   product_variant_id: string;
   quantity: number;
-  price: number; 
+  price: number;
   name: string;
 };
 
@@ -167,24 +180,24 @@ export type OrderItem = OrderItemBase & {
 export type OrderWithItems = {
   order: Order;
   order_items: OrderItem[];
-}
+};
 
 type ReviewBase = {
   rating: number;
   title: string;
   content: string;
-}
+};
 
 export type ReviewData = ReviewBase & {
   product_variant_id: string;
   order_item_id: string;
-}
+};
 
 export type Review = ReviewData & {
   id: string;
-}
+};
 
 export type Tokens = {
   access_token: string;
   refresh_token: string;
-}
+};
