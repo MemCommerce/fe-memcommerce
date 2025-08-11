@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MemCommerce Frontend
 
-## Getting Started
+This repository contains the frontend for the MemCommerce demo shop. It is built with **Next.js 15**, **React 19**, and **Tailwind CSS** and showcases components such as hero banners, category highlights and a wishlist.
 
-First, run the development server:
+## Running the project
+
+1. Install dependencies
+
+```bash
+npm install
+```
+
+2. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Build and run for production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Lint the codebase
 
-## Learn More
+```bash
+npm run lint
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `app/` – Next.js App Router routes and API handlers
+- `components/` – Reusable UI building blocks
+- `context/` – React context providers for shared state
+- `hooks/` – Custom React hooks
+- `lib/` – Utility functions and helpers
+- `public/` – Static assets such as images and fonts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Overview
 
-## Deploy on Vercel
+MemCommerce is a lightweight ecommerce example. It demonstrates how to combine Next.js server components with Radix UI and Tailwind to build a simple storefront with category pages and a wishlist.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
