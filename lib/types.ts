@@ -197,8 +197,8 @@ export type Review = ReviewData & {
   id: string;
 };
 
-export type UserReview = {
-  review: Review;
+export type UserReviewResponse = {
+  review: Review | null;
   order_item: OrderItem;
 };
 
