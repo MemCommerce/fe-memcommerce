@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import AuthContext from "@/context/AuthContext";
 import { OrderData } from "@/lib/types";
 import { OrderStatusEnum } from "@/lib/enums";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const initialFormState: OrderData = {
   full_name: "",
@@ -29,6 +30,7 @@ export default function CartPage() {
   const router = useRouter();
   const [formData, setFormData] = useState(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,7 +45,8 @@ export default function CartPage() {
       router.push(`/order/${order.id}`);
     } catch (error) {
       console.error("Error placing order:", error);
-      alert("Failed to place order. Please try again.");
+      setAlertMessage("Failed to place order. Please try again.");
+      setTimeout(() => setAlertMessage(""), 3000);
     }
   };
 
@@ -59,6 +62,11 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {alertMessage && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>{alertMessage}</AlertDescription>
+        </Alert>
+      )}
       <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

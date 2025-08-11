@@ -10,10 +10,12 @@ import Link from "next/link";
 import { ProductCardProps } from "@/lib/interfaces";
 import { CartLineItemData, Size, WishlistItemData } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { token } = useContext(AuthContext);
   const [selectedProductVariant, setSelectedProductVariant] = useState(product.variants[0])
+  const [alertMessage, setAlertMessage] = useState("")
   const availableSizes: Size[] = product.variants.reduce<Size[]>((acc, variant) => {
     if (acc.map((s) => s.id).includes(variant.size_id)) return acc
     const size: Size = {
@@ -26,9 +28,14 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const { addToWishlist } = useWishlist();
 
+  const showAlert = (message: string) => {
+    setAlertMessage(message)
+    setTimeout(() => setAlertMessage(""), 3000)
+  }
+
   const handleAddToCart = () => {
     if (!token) {
-      alert("Please log in to add items to your cart.");
+      showAlert("Please log in to add items to your cart.")
       return;
     }
 
@@ -43,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToWishlist = () => {
     if (!token) {
-      alert("Please log in to add items to your wishlist.");
+      showAlert("Please log in to add items to your wishlist.")
       return;
     }
     const item: WishlistItemData = {
@@ -75,6 +82,11 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       <div className="p-4">
+        {alertMessage && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{alertMessage}</AlertDescription>
+          </Alert>
+        )}
         <Link href={`/product/${product.id}`} className="block">
           <h3 className="font-medium text-lg hover:underline">{product.name}</h3>
           <p className="text-gray-500 text-sm mb-2">{product.category_name}</p>
