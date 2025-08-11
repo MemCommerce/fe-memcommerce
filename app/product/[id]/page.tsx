@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { ChevronLeft, Star } from 'lucide-react'
 import { useCart } from "@/hooks/useCart"
+import { useWishlist } from "@/hooks/useWishlist"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { getStorefrontProductById } from "@/app/api/storefrontApi"
-import { CartLineItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types"
+import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types"
 import AuthContext from "@/context/AuthContext"
 
 export default function ProductDetailPage({
@@ -22,6 +23,7 @@ export default function ProductDetailPage({
   const [selectedProductVariant, setSelectedProductVariant] = useState<StorefrontVariant | null>(null)
   const [quantity, setQuantity] = useState(1)
   const { addToCart } = useCart()
+  const { addToWishlist } = useWishlist()
   const { id } = use(params)
   const { token } = use(AuthContext)
 
@@ -66,6 +68,19 @@ export default function ProductDetailPage({
         name: product.name,
       }
       addToCart(cartItem, token);
+    };
+
+  const handleAddToWishlist = () => {
+      if (!token) {
+        alert("Please log in to add items to your wishlist.");
+        return;
+      }
+      const item: WishlistItemData = {
+        product_variant_id: selectedProductVariant.id,
+        price: selectedProductVariant.price,
+        name: product.name,
+      };
+      addToWishlist(item, token);
     };
 
    const handleSizeChange = (value: string) => {
@@ -206,6 +221,9 @@ export default function ProductDetailPage({
 
           <Button onClick={handleAddToCart} className="w-full py-6 text-lg" size="lg">
             Add to Cart
+          </Button>
+          <Button onClick={handleAddToWishlist} variant="outline" className="w-full py-6 text-lg mt-2" size="lg">
+            Add to Wishlist
           </Button>
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">

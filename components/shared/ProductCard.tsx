@@ -4,10 +4,11 @@ import { useContext, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { ProductCardProps } from "@/lib/interfaces";
-import { CartLineItemData, Size } from "@/lib/types";
+import { CartLineItemData, Size, WishlistItemData } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -23,6 +24,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }, []);
 
   const { addToCart } = useCart();
+  const { addToWishlist } = useWishlist();
 
   const handleAddToCart = () => {
     if (!token) {
@@ -37,6 +39,19 @@ export default function ProductCard({ product }: ProductCardProps) {
       name: product.name,
     }
     addToCart(cartItem, token);
+  };
+
+  const handleAddToWishlist = () => {
+    if (!token) {
+      alert("Please log in to add items to your wishlist.");
+      return;
+    }
+    const item: WishlistItemData = {
+      product_variant_id: selectedProductVariant.id,
+      price: selectedProductVariant.price,
+      name: product.name,
+    };
+    addToWishlist(item, token);
   };
 
   const handleSizeChange = (value: string) => {
@@ -102,6 +117,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <Button onClick={handleAddToCart} className="w-full">
           Add to Cart
+        </Button>
+        <Button onClick={handleAddToWishlist} variant="outline" className="w-full mt-2">
+          Add to Wishlist
         </Button>
       </div>
     </div>
