@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function ContactNewsletter() {
   const [contactForm, setContactForm] = useState({
@@ -16,6 +17,12 @@ export default function ContactNewsletter() {
   })
 
   const [newsletter, setNewsletter] = useState("")
+  const [alertMessage, setAlertMessage] = useState("")
+
+  const showAlert = (message: string) => {
+    setAlertMessage(message)
+    setTimeout(() => setAlertMessage(""), 3000)
+  }
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -24,18 +31,23 @@ export default function ContactNewsletter() {
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert("Message sent! (This would send the message in a real app)")
+    showAlert("Message sent! (This would send the message in a real app)")
     setContactForm({ name: "", email: "", message: "" })
   }
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert("Subscribed to newsletter! (This would subscribe in a real app)")
+    showAlert("Subscribed to newsletter! (This would subscribe in a real app)")
     setNewsletter("")
   }
 
   return (
     <section className="container mx-auto px-4 py-8">
+      {alertMessage && (
+        <Alert className="mb-4">
+          <AlertDescription>{alertMessage}</AlertDescription>
+        </Alert>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
           <h2 className="text-3xl font-bold mb-6">Contact Us</h2>

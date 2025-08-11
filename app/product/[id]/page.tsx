@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { getStorefrontProductById } from "@/app/api/storefrontApi"
 import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types"
 import AuthContext from "@/context/AuthContext"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function ProductDetailPage({
   params
@@ -26,6 +27,7 @@ export default function ProductDetailPage({
   const { addToWishlist } = useWishlist()
   const { id } = use(params)
   const { token } = use(AuthContext)
+  const [alertMessage, setAlertMessage] = useState("")
 
   useEffect(() => {
     (async () => {
@@ -55,9 +57,14 @@ export default function ProductDetailPage({
       return [...acc, size];
     }, []);
 
+  const showAlert = (message: string) => {
+    setAlertMessage(message)
+    setTimeout(() => setAlertMessage(""), 3000)
+  }
+
   const handleAddToCart = () => {
       if (!token) {
-        alert("Please log in to add items to your cart.");
+        showAlert("Please log in to add items to your cart.")
         return;
       }
         
@@ -72,7 +79,7 @@ export default function ProductDetailPage({
 
   const handleAddToWishlist = () => {
       if (!token) {
-        alert("Please log in to add items to your wishlist.");
+        showAlert("Please log in to add items to your wishlist.")
         return;
       }
       const item: WishlistItemData = {
@@ -122,6 +129,11 @@ export default function ProductDetailPage({
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {alertMessage && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>{alertMessage}</AlertDescription>
+        </Alert>
+      )}
       {/* Back button */}
       <Button variant="ghost" className="mb-6 flex items-center gap-1" onClick={() => router.back()}>
         <ChevronLeft className="h-4 w-4" />
