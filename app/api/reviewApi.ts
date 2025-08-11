@@ -1,4 +1,4 @@
-import { Review, ReviewData } from "@/lib/types"
+import { Review, ReviewData, UserReview } from "@/lib/types"
 import { REVIEW_URL } from "@/lib/urls"
 
 export const postReview = async (data: ReviewData, token: string): Promise<Review> => {
@@ -35,5 +35,20 @@ export const putReview = async (reviewId: string, reviewData: ReviewData, token:
     throw Error(errorData)
   }
   const data: Review = await resp.json()
+  return data
+}
+
+export const getUserReviews = async (token: string): Promise<UserReview[]> => {
+  const resp = await fetch(`${REVIEW_URL}user-reviews`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  if (!resp.ok) {
+    const errorData = await resp.text()
+    console.error("Error fetching user reviews:", errorData)
+    throw new Error("Failed to fetch user reviews")
+  }
+  const data: UserReview[] = await resp.json()
   return data
 }

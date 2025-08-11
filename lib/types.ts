@@ -197,6 +197,11 @@ export type Review = ReviewData & {
   id: string;
 };
 
+export type UserReview = {
+  review: Review;
+  order_item: OrderItem;
+};
+
 export type Tokens = {
   access_token: string;
   refresh_token: string;
