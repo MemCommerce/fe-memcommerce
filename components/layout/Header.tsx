@@ -12,6 +12,7 @@ import {
   UserCircle,
   LogOut,
   MessageSquare,
+  Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,6 +104,10 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+
+            <Link href="/wishlist" className="relative">
+              <Heart className="h-6 w-6 text-gray-700" />
+            </Link>
 
             <Link href="/cart" className="relative">
               <ShoppingCart className="h-6 w-6 text-gray-700" />
@@ -198,6 +203,14 @@ export default function Header() {
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Cart {totalItems > 0 && `(${totalItems})`}
+              </Link>
+              <Link
+                href="/wishlist"
+                className="text-lg font-medium flex items-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Heart className="h-5 w-5 mr-2" />
+                Wishlist
               </Link>
             </nav>
           </div>

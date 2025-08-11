@@ -45,6 +45,11 @@ export default function Footer() {
                   Cart
                 </Link>
               </li>
+              <li>
+                <Link href="/wishlist" className="text-gray-300 hover:text-white">
+                  Wishlist
+                </Link>
+              </li>
             </ul>
           </div>
 

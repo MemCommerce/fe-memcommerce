@@ -11,6 +11,7 @@ export const PRODUCT_VARIANTS_URL = `${API_URL}/product-variants/`;
 export const STOREFRONT_URL = `${API_URL}/storefront/`;
 export const AUTH_URL = `${API_URL}/auth/`;
 export const CART_URL = `${API_URL}/cart/`;
+export const WISHLIST_URL = `${API_URL}/wishlist/`;
 export const ORDER_URL = `${API_URL}/orders/`;
 export const REVIEW_URL = `${API_URL}/reviews/`;
 

@@ -146,6 +146,20 @@ export type CartLineItem = CartLineItemBase & {
   image_url?: string;
 };
 
+type WishlistItemBase = {
+  product_variant_id: string;
+  price: number;
+  name: string;
+};
+
+export type WishlistItemData = WishlistItemBase;
+
+export type WishlistItem = WishlistItemBase & {
+  id: string;
+  user_id: string;
+  image_url?: string;
+};
+
 type OrderBase = {
   full_name: string;
   email: string;
