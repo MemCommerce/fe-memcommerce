@@ -3,7 +3,16 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart, Menu, X, User, Package, UserCircle, LogOut } from "lucide-react";
+import {
+  ShoppingCart,
+  Menu,
+  X,
+  User,
+  Package,
+  UserCircle,
+  LogOut,
+  MessageSquare,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -68,6 +77,12 @@ export default function Header() {
                     <Link href="/my-orders" className="flex items-center cursor-pointer">
                       <Package className="h-4 w-4 mr-2" />
                       My Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/my-reviews" className="flex items-center cursor-pointer">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      My Reviews
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -145,12 +160,20 @@ export default function Header() {
               ) : (
                 <>
                   <Link
-                    href="/orders"
+                    href="/my-orders"
                     className="text-lg font-medium flex items-center"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <Package className="h-5 w-5 mr-2" />
                     My Orders
+                  </Link>
+                  <Link
+                    href="/my-reviews"
+                    className="text-lg font-medium flex items-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <MessageSquare className="h-5 w-5 mr-2" />
+                    My Reviews
                   </Link>
                   <Link
                     href="/profile"
