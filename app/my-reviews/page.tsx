@@ -3,8 +3,8 @@
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import AuthContext from "@/context/AuthContext";
-import { UserReview, ReviewData, Review } from "@/lib/types";
-import { getUserReviews, putReview } from "../api/reviewApi";
+import { UserReviewResponse, ReviewData, Review } from "@/lib/types";
+import { getUserReviews, postReview, putReview } from "../api/reviewApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -14,7 +14,7 @@ import { ReviewModal } from "@/components/review-modal";
 
 export default function MyReviewsPage() {
   const { token } = use(AuthContext);
-  const [reviews, setReviews] = useState<UserReview[]>([]);
+  const [reviews, setReviews] = useState<UserReviewResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reviewModal, setReviewModal] = useState<{
@@ -22,7 +22,8 @@ export default function MyReviewsPage() {
     productName: string;
     productVariantId: string;
     orderItemId: string;
-    existingReview: Review;
+    existingReview?: Review;
+    isEditing: boolean;
   } | null>(null);
 
   useEffect(() => {
@@ -41,13 +42,25 @@ export default function MyReviewsPage() {
     fetchReviews();
   }, [token]);
 
-  const handleEdit = (r: UserReview) => {
+  const handleEdit = (r: UserReviewResponse) => {
+    if (!r.review) return;
     setReviewModal({
       isOpen: true,
       productName: r.order_item.name,
       productVariantId: r.review.product_variant_id,
       orderItemId: r.order_item.id,
       existingReview: r.review,
+      isEditing: true,
+    });
+  };
+
+  const handleAdd = (r: UserReviewResponse) => {
+    setReviewModal({
+      isOpen: true,
+      productName: r.order_item.name,
+      productVariantId: r.order_item.product_variant_id,
+      orderItemId: r.order_item.id,
+      isEditing: false,
     });
   };
 
@@ -56,6 +69,8 @@ export default function MyReviewsPage() {
     try {
       if (reviewId) {
         await putReview(reviewId, reviewData, token);
+      } else {
+        await postReview(reviewData, token);
       }
       const data = await getUserReviews(token);
       setReviews(data);
@@ -98,11 +113,11 @@ export default function MyReviewsPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">My Reviews</h1>
       {reviews.length === 0 ? (
-        <p className="text-gray-600">You haven&apos;t written any reviews yet.</p>
+        <p className="text-gray-600">You have no items available for review.</p>
       ) : (
         <div className="space-y-6">
           {reviews.map((r) => (
-            <Card key={r.review.id}>
+            <Card key={r.order_item.id}>
               <CardContent className="p-6 flex gap-4">
                 {r.order_item.image_url ? (
                   <div className="relative w-24 h-24 flex-shrink-0">
@@ -121,19 +136,38 @@ export default function MyReviewsPage() {
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <p className="font-medium text-lg">{r.order_item.name}</p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(r)}
-                      className="flex items-center gap-1"
-                    >
-                      <Edit3 className="h-3 w-3" /> Edit
-                    </Button>
+                    {r.review ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(r)}
+                        className="flex items-center gap-1"
+                      >
+                        <Edit3 className="h-3 w-3" /> Edit
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAdd(r)}
+                        className="flex items-center gap-1"
+                      >
+                        <Star className="h-3 w-3" /> Review
+                      </Button>
+                    )}
                   </div>
-                  <div className="mt-2">{renderStars(r.review.rating)}</div>
-                  {r.review.title && <p className="mt-2 font-medium">{r.review.title}</p>}
-                  {r.review.content && (
-                    <p className="text-sm text-gray-600 mt-1">{r.review.content}</p>
+                  {r.review ? (
+                    <>
+                      <div className="mt-2">{renderStars(r.review.rating)}</div>
+                      {r.review.title && <p className="mt-2 font-medium">{r.review.title}</p>}
+                      {r.review.content && (
+                        <p className="text-sm text-gray-600 mt-1">{r.review.content}</p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-sm text-gray-600 mt-2">
+                      You haven&apos;t reviewed this item yet.
+                    </p>
                   )}
                 </div>
               </CardContent>
@@ -150,7 +184,7 @@ export default function MyReviewsPage() {
           productVariantId={reviewModal.productVariantId}
           orderItemId={reviewModal.orderItemId}
           existingReview={reviewModal.existingReview}
-          isEditing={true}
+          isEditing={reviewModal.isEditing}
         />
       )}
     </div>
