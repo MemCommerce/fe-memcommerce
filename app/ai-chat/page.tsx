@@ -9,6 +9,20 @@ import { postChatMessage } from "@/app/api/aiChatApi";
 import AuthContext from "@/context/AuthContext";
 import { Bot, Loader2, Send, User } from "lucide-react";
 
+const renderMarkdown = (text: string) => {
+  const escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  return escaped
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/__(.*?)__/g, "<strong>$1</strong>")
+    .replace(/\*(?!\*)(.*?)\*/g, "<em>$1</em>")
+    .replace(/_(?!_)(.*?)_/g, "<em>$1</em>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\n/g, "<br />");
+};
+
 export default function AIChatPage() {
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [text, setText] = useState("");
@@ -53,11 +67,17 @@ export default function AIChatPage() {
               <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">
                 <Bot className="w-4 h-4" />
               </div>
-              <div className="bg-gray-200 p-3 rounded-lg max-w-[80%]">{m.content}</div>
+              <div
+                className="bg-gray-200 p-3 rounded-lg max-w-[80%]"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
+              />
             </div>
           ) : (
             <div key={m.id} className="flex items-start justify-end mb-2">
-              <div className="bg-black text-white p-3 rounded-lg max-w-[80%]">{m.content}</div>
+              <div
+                className="bg-black text-white p-3 rounded-lg max-w-[80%]"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
+              />
               <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center ml-2">
                 <User className="w-4 h-4" />
               </div>
