@@ -56,6 +56,9 @@ export default function Header() {
             <Link href="/kids" className="text-gray-700 hover:text-gray-900">
               Kids
             </Link>
+            <Link href="/ai-chat" className="text-gray-700 hover:text-gray-900">
+              AI Chat
+            </Link>
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -147,6 +150,9 @@ export default function Header() {
               </Link>
               <Link href="/kids" className="text-lg font-medium" onClick={() => setMobileMenuOpen(false)}>
                 Kids
+              </Link>
+              <Link href="/ai-chat" className="text-lg font-medium" onClick={() => setMobileMenuOpen(false)}>
+                AI Chat
               </Link>
               {!token ? (
                 <Link

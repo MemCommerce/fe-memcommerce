@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { use, useState, type ChangeEvent } from "react";
+import { usePathname } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,12 +11,17 @@ import { postChatMessage } from "@/app/api/aiChatApi";
 import AuthContext from "@/context/AuthContext";
 
 export default function ChatbotButton() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [text, setText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const { token } = use(AuthContext);
+
+  if (pathname === "/ai-chat") {
+    return null;
+  }
  
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
