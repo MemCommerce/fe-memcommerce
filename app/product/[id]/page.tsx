@@ -13,6 +13,8 @@ import { getStorefrontProductById } from "@/app/api/storefrontApi"
 import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types"
 import AuthContext from "@/context/AuthContext"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import FavoriteToggleButton from "@/components/wishlist/favoriteToggleButton"
+
 
 export default function ProductDetailPage({
   params
@@ -29,11 +31,13 @@ export default function ProductDetailPage({
   const { token } = use(AuthContext)
   const [alertMessage, setAlertMessage] = useState("")
 
+
   useEffect(() => {
     (async () => {
       const data = await getStorefrontProductById(id)
       setProduct(data)
       setSelectedProductVariant(data.variants[0])
+      
     })()
   }, [params, id])
 
@@ -151,6 +155,8 @@ export default function ProductDetailPage({
         {/* Product Info */}
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+          {/* Adding */}
+             <FavoriteToggleButton productId={id} />
           <div className="flex items-center gap-3 mb-4">
             <p className="text-xl font-semibold">${selectedProductVariant.price.toFixed(2)}</p>
             {product.reviews.length > 0 && (
