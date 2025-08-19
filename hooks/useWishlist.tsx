@@ -26,8 +26,15 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const loadWishlist = async (token: string) => {
     try {
       const items = await getWishlist(token);
-      setWishlistItems(items);
-      localStorage.setItem("wishlistItems", JSON.stringify(items));
+
+      // decoding user_id
+      const decoded: { sub: string } = JSON.parse(atob(token.split(".")[1]));
+      const userId = decoded.sub;
+
+      const filtered = items.filter((item) => item.user_id === userId);
+
+      setWishlistItems(filtered);
+      localStorage.setItem("wishlistItems", JSON.stringify(filtered));
     } catch (error) {
       console.error("Failed to load wishlist:", error);
     }
@@ -47,7 +54,9 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const removeFromWishlist = async (itemId: string, token: string) => {
     try {
       await deleteWishlistItem(itemId, token);
+
       const newState = wishlistItems.filter((item) => item.id !== itemId);
+
       setWishlistItems(newState);
       localStorage.setItem("wishlistItems", JSON.stringify(newState));
     } catch (error) {

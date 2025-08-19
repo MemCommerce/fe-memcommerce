@@ -7,27 +7,27 @@ type FavoriteToggleFormProps = {
 };
 
 export default function FavoriteToggleForm({ productId, favoriteId }: FavoriteToggleFormProps) {
-  const { addToWishlist, removeFromWishlist } = useWishlist();
+  const { addToWishlist, removeFromWishlist, wishlistItems } = useWishlist();
 
   const handleToggle = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      console.error("No token found. User must be logged in.");
-      return;
-    }
+    const token = localStorage.getItem("authToken") ?? "";
 
     if (favoriteId) {
-      await removeFromWishlist(favoriteId, token);
-    } else {
-      await addToWishlist(
-        {
-          product_variant_id: productId,
-          name: "Unknown product",
-          price: 0,
-        },
-        token
+      // DEcoding user_id
+      const decoded: { sub: string } = JSON.parse(atob(token.split(".")[1]));
+      const userId = decoded.sub;
+
+      const realFavorite = wishlistItems.find(
+        (item) => item.product_variant_id === productId && item.user_id === userId
       );
+
+      if (realFavorite) {
+        await removeFromWishlist(realFavorite.id, token);
+      } else {
+        console.warn("Trying to remove guest item → ignored");
+      }
+    } else {
+      await addToWishlist({ product_variant_id: productId, name: "Unknown product", price: 0 }, token);
     }
   };
 
