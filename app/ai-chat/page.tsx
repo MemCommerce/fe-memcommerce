@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, type ChangeEvent } from "react";
+import { useContext, useState, type ChangeEvent } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +28,7 @@ export default function AIChatPage() {
   const [text, setText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const { token } = use(AuthContext);
+  const { token } = useContext(AuthContext);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);

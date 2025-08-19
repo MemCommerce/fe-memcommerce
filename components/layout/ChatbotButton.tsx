@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { use, useState, type ChangeEvent } from "react";
+import { useContext, useState, type ChangeEvent } from "react";
 import { usePathname } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { MessageSquare, X } from "lucide-react";
@@ -17,7 +17,7 @@ export default function ChatbotButton() {
   const [text, setText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const { token } = use(AuthContext);
+  const { token } = useContext(AuthContext);
 
   if (pathname === "/ai-chat") {
     return null;
