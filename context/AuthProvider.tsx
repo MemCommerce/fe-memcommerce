@@ -16,7 +16,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           localStorage.setItem("authToken", tokensData.access_token);
           localStorage.setItem("refreshToken", tokensData.refresh_token);
         } catch {
-          logOut()
+          logOut();
         }
       })();
     }
@@ -33,6 +33,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     localStorage.removeItem("authToken");
     localStorage.removeItem("refreshToken");
+    
+    // Clean wishlist 
+    localStorage.removeItem("wishlistItems");
+
     redirect("/");
   };
 
