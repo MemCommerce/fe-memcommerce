@@ -13,18 +13,12 @@ export default function FavoriteToggleForm({ productId, favoriteId }: FavoriteTo
     const token = localStorage.getItem("authToken") ?? "";
 
     if (favoriteId) {
-      // DEcoding user_id
-      const decoded: { sub: string } = JSON.parse(atob(token.split(".")[1]));
-      const userId = decoded.sub;
-
-      const realFavorite = wishlistItems.find(
-        (item) => item.product_variant_id === productId && item.user_id === userId
-      );
+      const realFavorite = wishlistItems.find((item) => item.product_variant_id === productId);
 
       if (realFavorite) {
         await removeFromWishlist(realFavorite.id, token);
       } else {
-        console.warn("Trying to remove guest item → ignored");
+        console.warn("Favorite item not found in current wishlist");
       }
     } else {
       await addToWishlist({ product_variant_id: productId, name: "Unknown product", price: 0 }, token);

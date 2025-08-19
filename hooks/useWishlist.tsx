@@ -27,14 +27,10 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     try {
       const items = await getWishlist(token);
 
-      // decoding user_id
-      const decoded: { sub: string } = JSON.parse(atob(token.split(".")[1]));
-      const userId = decoded.sub;
+      setWishlistItems(items);
 
-      const filtered = items.filter((item) => item.user_id === userId);
+      localStorage.setItem("wishlistItems", JSON.stringify(items));
 
-      setWishlistItems(filtered);
-      localStorage.setItem("wishlistItems", JSON.stringify(filtered));
     } catch (error) {
       console.error("Failed to load wishlist:", error);
     }
