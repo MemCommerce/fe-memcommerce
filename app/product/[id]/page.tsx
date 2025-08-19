@@ -1,41 +1,38 @@
-"use client"
-import { use, useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { ChevronLeft, Star } from 'lucide-react'
-import { useCart } from "@/hooks/useCart"
-import { useWishlist } from "@/hooks/useWishlist"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { getStorefrontProductById } from "@/app/api/storefrontApi"
-import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types"
-import AuthContext from "@/context/AuthContext"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+"use client";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { ChevronLeft, Star } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { getStorefrontProductById } from "@/app/api/storefrontApi";
+import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types";
+import AuthContext from "@/context/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import ShareButton from "@/components/shared/ShareButton";
 
-export default function ProductDetailPage({
-  params
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const router = useRouter()
-  const [product, setProduct] = useState<SFProductWithReview | null>(null)
-  const [selectedProductVariant, setSelectedProductVariant] = useState<StorefrontVariant | null>(null)
-  const [quantity, setQuantity] = useState(1)
-  const { addToCart } = useCart()
-  const { addToWishlist } = useWishlist()
-  const { id } = use(params)
-  const { token } = use(AuthContext)
-  const [alertMessage, setAlertMessage] = useState("")
+export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const router = useRouter();
+  const [product, setProduct] = useState<SFProductWithReview | null>(null);
+  const [selectedProductVariant, setSelectedProductVariant] = useState<StorefrontVariant | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const { addToWishlist } = useWishlist();
+  const { id } = use(params);
+  const { token } = use(AuthContext);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     (async () => {
-      const data = await getStorefrontProductById(id)
-      setProduct(data)
-      setSelectedProductVariant(data.variants[0])
-    })()
-  }, [params, id])
+      const data = await getStorefrontProductById(id);
+      setProduct(data);
+      setSelectedProductVariant(data.variants[0]);
+    })();
+  }, [params, id]);
 
   // If product not found, show error
   if (!product || !selectedProductVariant) {
@@ -45,59 +42,61 @@ export default function ProductDetailPage({
         <p className="mb-8">The product you&apos;re looking for doesn&apos;t exist or has been removed.</p>
         <Button onClick={() => router.push("/")}>Back to Home</Button>
       </div>
-    )
+    );
   }
 
   const availableSizes: Size[] = product.variants.reduce<Size[]>((acc, variant) => {
-      if (acc.map((s) => s.id).includes(variant.size_id)) return acc
-      const size: Size = {
-        id: variant.size_id,
-        label: variant.size
-      }
-      return [...acc, size];
-    }, []);
+    if (acc.map((s) => s.id).includes(variant.size_id)) return acc;
+    const size: Size = {
+      id: variant.size_id,
+      label: variant.size,
+    };
+    return [...acc, size];
+  }, []);
 
   const showAlert = (message: string) => {
-    setAlertMessage(message)
-    setTimeout(() => setAlertMessage(""), 3000)
-  }
+    setAlertMessage(message);
+    setTimeout(() => setAlertMessage(""), 3000);
+  };
 
   const handleAddToCart = () => {
-      if (!token) {
-        showAlert("Please log in to add items to your cart.")
-        return;
-      }
-        
-      const cartItem: CartLineItemData = {
-        product_variant_id: selectedProductVariant.id,
-        quantity: quantity,
-        price: selectedProductVariant.price,
-        name: product.name,
-      }
-      addToCart(cartItem, token);
+    if (!token) {
+      showAlert("Please log in to add items to your cart.");
+      return;
+    }
+
+    const cartItem: CartLineItemData = {
+      product_variant_id: selectedProductVariant.id,
+      quantity: quantity,
+      price: selectedProductVariant.price,
+      name: product.name,
     };
+    addToCart(cartItem, token);
+  };
 
   const handleAddToWishlist = () => {
-      if (!token) {
-        showAlert("Please log in to add items to your wishlist.")
-        return;
-      }
-      const item: WishlistItemData = {
-        product_variant_id: selectedProductVariant.id,
-        price: selectedProductVariant.price,
-        name: product.name,
-      };
-      addToWishlist(item, token);
+    if (!token) {
+      showAlert("Please log in to add items to your wishlist.");
+      return;
+    }
+    const item: WishlistItemData = {
+      product_variant_id: selectedProductVariant.id,
+      price: selectedProductVariant.price,
+      name: product.name,
     };
+    addToWishlist(item, token);
+  };
 
-   const handleSizeChange = (value: string) => {
-    const newPvState = product.variants.find((pv) => pv.size_id === value)!
-    setSelectedProductVariant(newPvState)
-  }
+  const handleSizeChange = (value: string) => {
+    const newPvState = product.variants.find((pv) => pv.size_id === value)!;
+    setSelectedProductVariant(newPvState);
+  };
 
   const handleColorChange = (value: string) => {
-    setSelectedProductVariant((prev) => product.variants.find((pv) => pv.color_id === value && pv.size_id === prev!.size_id)!)
-  }
+    setSelectedProductVariant(
+      (prev) => product.variants.find((pv) => pv.color_id === value && pv.size_id === prev!.size_id)!
+    );
+  };
 
   // Helper function to render star rating
   const renderStarRating = (rating: number) => {
@@ -106,26 +105,23 @@ export default function ProductDetailPage({
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`h-4 w-4 ${
-              star <= rating
-                ? "fill-yellow-400 text-yellow-400"
-                : "fill-gray-200 text-gray-200"
-            }`}
+            className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`}
           />
         ))}
       </div>
-    )
-  }
+    );
+  };
 
   // Helper function to get variant details for a review
   const getVariantForReview = (variantId: string) => {
-    return product.variants.find(variant => variant.id === variantId)
-  }
+    return product.variants.find((variant) => variant.id === variantId);
+  };
 
   // Calculate average rating
-  const averageRating = product.reviews.length > 0 
-    ? product.reviews.reduce((sum, review) => sum + review.rating, 0) / product.reviews.length 
-    : 0
+  const averageRating =
+    product.reviews.length > 0
+      ? product.reviews.reduce((sum, review) => sum + review.rating, 0) / product.reviews.length
+      : 0;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -144,20 +140,26 @@ export default function ProductDetailPage({
         {/* Product Images */}
         <div className="space-y-4">
           <div className="relative h-[400px] rounded-lg overflow-hidden border">
-            <Image src={selectedProductVariant.image_url || "/t-shirt-placeholder.png"} alt={product.name} fill className="object-cover" />
+            <Image
+              src={selectedProductVariant.image_url || "/t-shirt-placeholder.png"}
+              alt={product.name}
+              fill
+              className="object-cover"
+            />
           </div>
         </div>
 
         {/* Product Info */}
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+            <ShareButton name={product.name} productId={id} />
           <div className="flex items-center gap-3 mb-4">
             <p className="text-xl font-semibold">${selectedProductVariant.price.toFixed(2)}</p>
             {product.reviews.length > 0 && (
               <div className="flex items-center gap-2">
                 {renderStarRating(Math.round(averageRating))}
                 <span className="text-sm text-gray-600">
-                  ({product.reviews.length} review{product.reviews.length !== 1 ? 's' : ''})
+                  ({product.reviews.length} review{product.reviews.length !== 1 ? "s" : ""})
                 </span>
               </div>
             )}
@@ -167,7 +169,8 @@ export default function ProductDetailPage({
             <p className="text-gray-700 mb-4">{product.description}</p>
             <div className="space-y-1 mb-4">
               <p>
-                <strong>Category:</strong> {product.category_name.charAt(0).toUpperCase() + product.category_name.slice(1)}
+                <strong>Category:</strong>{" "}
+                {product.category_name.charAt(0).toUpperCase() + product.category_name.slice(1)}
               </p>
               <p>
                 <strong>Material:</strong> Premium Cotton Blend
@@ -187,10 +190,10 @@ export default function ProductDetailPage({
                 </SelectTrigger>
                 <SelectContent>
                   {availableSizes.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.label}
-                  </SelectItem>
-                ))}
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -202,11 +205,13 @@ export default function ProductDetailPage({
                   <SelectValue placeholder="Select color" />
                 </SelectTrigger>
                 <SelectContent>
-                  {product.variants.filter((pv) => pv.size_id === selectedProductVariant.size_id).map((pv) => (
-                  <SelectItem key={pv.id} value={pv.color_id}>
-                    {pv.color}
-                  </SelectItem>
-                ))}
+                  {product.variants
+                    .filter((pv) => pv.size_id === selectedProductVariant.size_id)
+                    .map((pv) => (
+                      <SelectItem key={pv.id} value={pv.color_id}>
+                        {pv.color}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -242,8 +247,8 @@ export default function ProductDetailPage({
             <h3 className="font-medium mb-2">Product Details</h3>
             <p className="text-sm text-gray-600">
               This premium {product.name.toLowerCase()} is designed for comfort and style. Made with high-quality
-              materials, it&apos;s perfect for everyday wear and special occasions. The {product.category_name} collection
-              features modern designs that are both trendy and timeless.
+              materials, it&apos;s perfect for everyday wear and special occasions. The {product.category_name}{" "}
+              collection features modern designs that are both trendy and timeless.
             </p>
           </div>
         </div>
@@ -263,7 +268,7 @@ export default function ProductDetailPage({
 
           <div className="grid gap-6">
             {product.reviews.map((review) => {
-              const variant = getVariantForReview(review.product_variant_id)
+              const variant = getVariantForReview(review.product_variant_id);
               return (
                 <Card key={review.id} className="w-full">
                   <CardHeader className="pb-3">
@@ -285,9 +290,7 @@ export default function ProductDetailPage({
                         )}
                       </div>
                     </div>
-                    {review.title && (
-                      <h5 className="font-medium text-gray-900 mt-2">{review.title}</h5>
-                    )}
+                    {review.title && <h5 className="font-medium text-gray-900 mt-2">{review.title}</h5>}
                   </CardHeader>
                   {review.content && (
                     <CardContent className="pt-0">
@@ -295,7 +298,7 @@ export default function ProductDetailPage({
                     </CardContent>
                   )}
                 </Card>
-              )
+              );
             })}
           </div>
         </div>
@@ -310,5 +313,5 @@ export default function ProductDetailPage({
         </div>
       )}
     </div>
-  )
+  );
 }
