@@ -1,6 +1,26 @@
 import { WISHLIST_URL } from "@/lib/urls";
 import { WishlistItem, WishlistItemData } from "@/lib/types";
 
+async function handleApiError(res: Response) {
+  let errorMessage = `HTTP ${res.status} ${res.statusText}`;
+
+  try {
+    const data = await res.json();
+    if (data?.detail) {
+      errorMessage += ` → ${data.detail}`;
+    } else {
+      errorMessage += ` → ${JSON.stringify(data)}`;
+    }
+  } catch {
+    const text = await res.text();
+    if (text) {
+      errorMessage += ` → ${text}`;
+    }
+  }
+
+  throw new Error(errorMessage);
+}
+
 export async function postWishlistItem(item: WishlistItemData, token: string): Promise<WishlistItem> {
   const res = await fetch(`${WISHLIST_URL}`, {
     method: "POST",
@@ -10,8 +30,9 @@ export async function postWishlistItem(item: WishlistItemData, token: string): P
     },
     body: JSON.stringify(item),
   });
-  if (!res.ok) throw new Error(await res.text());
-  return await res.json();
+  if (!res.ok) await handleApiError(res);
+
+  return res.json();
 }
 
 export async function getWishlist(token: string): Promise<WishlistItem[]> {
@@ -20,8 +41,9 @@ export async function getWishlist(token: string): Promise<WishlistItem[]> {
       Authorization: `Bearer ${token}`,
     },
   });
-  if (!res.ok) throw new Error(await res.text());
-  return await res.json();
+  if (!res.ok) await handleApiError(res);
+
+  return res.json();
 }
 
 export async function deleteWishlistItem(itemId: string, token: string) {
@@ -31,6 +53,8 @@ export async function deleteWishlistItem(itemId: string, token: string) {
       Authorization: `Bearer ${token}`,
     },
   });
-  if (!res.ok) throw new Error(await res.text());
+
+  if (!res.ok) await handleApiError(res);
+
   return true;
 }

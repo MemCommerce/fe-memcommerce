@@ -130,9 +130,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Button onClick={handleAddToCart} className="w-full">
           Add to Cart
         </Button>
-        <Button onClick={handleAddToWishlist} variant="outline" className="w-full mt-2">
+        {/* <Button onClick={handleAddToWishlist} variant="outline" className="w-full mt-2">
           Add to Wishlist
-        </Button>
+        </Button> */}
       </div>
     </div>
   );
