@@ -13,7 +13,11 @@ import { getStorefrontProductById } from "@/app/api/storefrontApi";
 import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
 import FavoriteToggleButton from "@/components/wishlist/favoriteToggleButton";
+
+import ShareButton from "@/components/shared/ShareButton";
+
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -152,12 +156,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         {/* Product Info */}
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+
           {/* Toggle Button */}
           <FavoriteToggleButton
             productId={selectedProductVariant.id}
             productName={product.name}
             productPrice={selectedProductVariant.price}
           />
+
+            <ShareButton name={product.name} productId={id} />
+
           <div className="flex items-center gap-3 mb-4">
             <p className="text-xl font-semibold">${selectedProductVariant.price.toFixed(2)}</p>
             {product.reviews.length > 0 && (
