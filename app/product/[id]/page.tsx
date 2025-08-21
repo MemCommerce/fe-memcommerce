@@ -153,7 +153,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
           {/* Toggle Button */}
-          <FavoriteToggleButton productId={id} />
+          <FavoriteToggleButton
+            productId={selectedProductVariant.id}
+            productName={product.name}
+            productPrice={selectedProductVariant.price}
+          />
           <div className="flex items-center gap-3 mb-4">
             <p className="text-xl font-semibold">${selectedProductVariant.price.toFixed(2)}</p>
             {product.reviews.length > 0 && (

@@ -4,9 +4,16 @@ import CardSubmitbutton from "./CardSubmitbutton";
 type FavoriteToggleFormProps = {
   productId: string;
   favoriteId: string | null;
+  productName: string;
+  productPrice: number;
 };
 
-export default function FavoriteToggleForm({ productId, favoriteId }: FavoriteToggleFormProps) {
+export default function FavoriteToggleForm({
+  productId,
+  favoriteId,
+  productName,
+  productPrice,
+}: FavoriteToggleFormProps) {
   const { addToWishlist, removeFromWishlist, wishlistItems } = useWishlist();
 
   const handleToggle = async () => {
@@ -21,7 +28,7 @@ export default function FavoriteToggleForm({ productId, favoriteId }: FavoriteTo
         console.warn("Favorite item not found in current wishlist");
       }
     } else {
-      await addToWishlist({ product_variant_id: productId, name: "Unknown product", price: 0 }, token);
+      await addToWishlist({ product_variant_id: productId, name: productName, price: productPrice }, token);
     }
   };
 
