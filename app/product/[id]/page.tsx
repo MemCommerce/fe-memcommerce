@@ -1,21 +1,20 @@
 "use client";
+
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronLeft, Star } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
-import { useWishlist } from "@/hooks/useWishlist";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getStorefrontProductById } from "@/app/api/storefrontApi";
-import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types";
+import { CartLineItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Heart } from "lucide-react";
-
 import ShareButton from "@/components/shared/ShareButton";
+import WishlistButton from "@/components/WishlistButton";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -23,7 +22,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [selectedProductVariant, setSelectedProductVariant] = useState<StorefrontVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
-  const { addToWishlist, wishlistItems, removeFromWishlist } = useWishlist();
   const { id } = use(params);
   const { token } = use(AuthContext);
   const [alertMessage, setAlertMessage] = useState("");
@@ -74,34 +72,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       name: product.name,
     };
     addToCart(cartItem, token);
-  };
-
-  // Wishlist
-
-  const favoriteItem = selectedProductVariant
-    ? wishlistItems.find((item) => item.product_variant_id === selectedProductVariant.id)
-    : null;
-
-  const handleAddToWishlist = () => {
-    if (!token) {
-      showAlert("Please log in to add items to your wishlist.");
-      return;
-    }
-
-    if (!selectedProductVariant) return;
-
-    const item: WishlistItemData = {
-      product_variant_id: selectedProductVariant.id,
-      price: selectedProductVariant.price,
-      name: product.name,
-    };
-    addToWishlist(item, token);
-  };
-
-  const handleRemoveFromWishlist = () => {
-    if (!token || !favoriteItem) return;
-
-    removeFromWishlist(favoriteItem.id, token);
   };
 
   const handleSizeChange = (value: string) => {
@@ -258,19 +228,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <Button onClick={handleAddToCart} className="w-full py-6 text-lg" size="lg">
             Add to Cart
           </Button>
-          <Button
-            onClick={favoriteItem ? handleRemoveFromWishlist : handleAddToWishlist}
-            variant="outline"
-            className="w-full py-4 text-lg flex items-center justify-center gap-2"
-            size="lg"
-          >
-            {favoriteItem ? (
-              <Heart className="h-6 w-6 text-red-500 fill-red-500" />
-            ) : (
-              <Heart className="h-6 w-6 text-gray-400" />
-            )}
-            {favoriteItem ? "Remove from Wishlist" : "Add to Wishlist"}
-          </Button>
+          
+          <WishlistButton
+            productId={id}
+            showAlert={showAlert}
+            productName={product.name}
+            productPrice={selectedProductVariant.price}
+          />
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <h3 className="font-medium mb-2">Product Details</h3>

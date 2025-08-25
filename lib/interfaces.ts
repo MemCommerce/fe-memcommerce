@@ -7,3 +7,10 @@ export interface CategoryPageProps {
 export interface ProductCardProps {
   product: StorefrontProduct;
 }
+
+export interface WishlistButtonProps {
+  productId: string;
+  productName: string;
+  productPrice: number;
+  showAlert: (message: string) => void;
+}

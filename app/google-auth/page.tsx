@@ -3,18 +3,21 @@
 import { useContext, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AuthContext from '@/context/AuthContext';
+import { useWishlist } from '@/hooks/useWishlist';
 
 const GoogleAuthContent = () => {
     const searchParams = useSearchParams();
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
     const { login } = useContext(AuthContext);
+    const { loadWishlist } = useWishlist()
 
     useEffect(() => {
         if (accessToken && refreshToken) {
+            loadWishlist(accessToken);
             login(accessToken, refreshToken);
         }
-    }, [accessToken, refreshToken, login]);
+    }, [accessToken, refreshToken, login, loadWishlist]);
 
     return (
         <div>
