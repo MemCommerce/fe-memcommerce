@@ -6,9 +6,9 @@ import { WishlistItem, WishlistItemData } from "@/lib/types";
 
 interface WishlistContextType {
   wishlistItems: WishlistItem[];
-  loadWishlist: (token: string) => void;
-  addToWishlist: (item: WishlistItemData, token: string) => void;
-  removeFromWishlist: (itemId: string, token: string) => void;
+  loadWishlist: (token: string) => Promise<void>;
+  addToWishlist: (item: WishlistItemData, token: string) => Promise<void>;
+  removeFromWishlist: (itemId: string, token: string) => Promise<void>;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);

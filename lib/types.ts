@@ -147,7 +147,7 @@ export type CartLineItem = CartLineItemBase & {
 };
 
 type WishlistItemBase = {
-  product_variant_id: string;
+  product_id: string;
   price: number;
   name: string;
 };
