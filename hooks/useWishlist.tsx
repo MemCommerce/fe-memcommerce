@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { getWishlist, postWishlistItem, deleteWishlistItem } from "@/app/api/wishlistApi";
 import { WishlistItem, WishlistItemData } from "@/lib/types";
 
@@ -22,19 +22,16 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       setWishlistItems(JSON.parse(saved));
     }
   }, []);
-
-  const loadWishlist = async (token: string) => {
+  
+  const loadWishlist = useCallback(async (token: string) => {
     try {
       const items = await getWishlist(token);
-
       setWishlistItems(items);
-
       localStorage.setItem("wishlistItems", JSON.stringify(items));
-
     } catch (error) {
       console.error("Failed to load wishlist:", error);
     }
-  };
+  }, []);
 
   const addToWishlist = async (item: WishlistItemData, token: string) => {
     try {

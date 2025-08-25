@@ -13,11 +13,9 @@ import { getStorefrontProductById } from "@/app/api/storefrontApi";
 import { CartLineItemData, WishlistItemData, SFProductWithReview, Size, StorefrontVariant } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-import FavoriteToggleButton from "@/components/wishlist/favoriteToggleButton";
+import { Heart } from "lucide-react";
 
 import ShareButton from "@/components/shared/ShareButton";
-
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -25,7 +23,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [selectedProductVariant, setSelectedProductVariant] = useState<StorefrontVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
-  const { addToWishlist } = useWishlist();
+  const { addToWishlist, wishlistItems, removeFromWishlist } = useWishlist();
   const { id } = use(params);
   const { token } = use(AuthContext);
   const [alertMessage, setAlertMessage] = useState("");
@@ -78,17 +76,32 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     addToCart(cartItem, token);
   };
 
+  // Wishlist
+
+  const favoriteItem = selectedProductVariant
+    ? wishlistItems.find((item) => item.product_variant_id === selectedProductVariant.id)
+    : null;
+
   const handleAddToWishlist = () => {
     if (!token) {
       showAlert("Please log in to add items to your wishlist.");
       return;
     }
+
+    if (!selectedProductVariant) return;
+
     const item: WishlistItemData = {
       product_variant_id: selectedProductVariant.id,
       price: selectedProductVariant.price,
       name: product.name,
     };
     addToWishlist(item, token);
+  };
+
+  const handleRemoveFromWishlist = () => {
+    if (!token || !favoriteItem) return;
+
+    removeFromWishlist(favoriteItem.id, token);
   };
 
   const handleSizeChange = (value: string) => {
@@ -157,14 +170,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
 
-          {/* Toggle Button */}
-          <FavoriteToggleButton
-            productId={selectedProductVariant.id}
-            productName={product.name}
-            productPrice={selectedProductVariant.price}
-          />
-
-            <ShareButton name={product.name} productId={id} />
+          <ShareButton name={product.name} productId={id} />
 
           <div className="flex items-center gap-3 mb-4">
             <p className="text-xl font-semibold">${selectedProductVariant.price.toFixed(2)}</p>
@@ -252,8 +258,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <Button onClick={handleAddToCart} className="w-full py-6 text-lg" size="lg">
             Add to Cart
           </Button>
-          <Button onClick={handleAddToWishlist} variant="outline" className="w-full py-6 text-lg mt-2" size="lg">
-            Add to Wishlist
+          <Button
+            onClick={favoriteItem ? handleRemoveFromWishlist : handleAddToWishlist}
+            variant="outline"
+            className="w-full py-4 text-lg flex items-center justify-center gap-2"
+            size="lg"
+          >
+            {favoriteItem ? (
+              <Heart className="h-6 w-6 text-red-500 fill-red-500" />
+            ) : (
+              <Heart className="h-6 w-6 text-gray-400" />
+            )}
+            {favoriteItem ? "Remove from Wishlist" : "Add to Wishlist"}
           </Button>
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
