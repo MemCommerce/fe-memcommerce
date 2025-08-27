@@ -13,6 +13,7 @@ import {
   LogOut,
   MessageSquare,
   Heart,
+  BaggageClaim
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -91,7 +92,7 @@ export default function Header() {
                   </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                     <Link href="/claims-refunds" className="flex items-center cursor-pointer">
-                      <MessageSquare className="h-4 w-4 mr-2" />
+                      <BaggageClaim  className="h-4 w-4 mr-2" />
                       Claims/Refunds
                     </Link>
                   </DropdownMenuItem>
