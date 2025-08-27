@@ -17,6 +17,11 @@ export default function CategoryPage({ products }: CategoryPageProps) {
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
+  //Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+
+  // Available sizes and colors
   const availableSizes: Size[] = products.reduce<Size[]>((acc, p) => {
     const variants = p.variants;
     const sizes: Size[] = variants
@@ -60,6 +65,13 @@ export default function CategoryPage({ products }: CategoryPageProps) {
     return sizeMatch && colorMatch;
   });
 
+  // Pagination logic
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Toggle filter functions
   const toggleSize = (size: string) => {
     setSelectedSizes((prev) => (prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]));
   };
@@ -124,10 +136,33 @@ export default function CategoryPage({ products }: CategoryPageProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
+        {currentProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-8">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          <span className="px-4">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
 
       {filteredProducts.length === 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
