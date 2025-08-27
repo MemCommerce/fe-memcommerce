@@ -15,6 +15,7 @@ import AuthContext from "@/context/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ShareButton from "@/components/shared/ShareButton";
 import WishlistButton from "@/components/WishlistButton";
+import toast from "react-hot-toast";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   const handleAddToCart = () => {
     if (!token) {
-      showAlert("Please log in to add items to your cart.");
+      toast.error("Please log in to add items to your cart.", { duration: 4000 });
       return;
     }
 
@@ -228,7 +229,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <Button onClick={handleAddToCart} className="w-full py-6 text-lg" size="lg">
             Add to Cart
           </Button>
-          
+
           <WishlistButton
             productId={id}
             showAlert={showAlert}
