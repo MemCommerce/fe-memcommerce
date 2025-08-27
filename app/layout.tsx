@@ -42,7 +42,7 @@ export default function RootLayout({
             <Footer />
             <ChatbotButton />
           </div>
-          <Toaster position="top-right" /> {/* Глобален toast */}
+          <Toaster position="top-right" /> 
         </Providers>
       </body>
     </html>
