@@ -89,6 +89,12 @@ export default function Header() {
                       My Reviews
                     </Link>
                   </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                    <Link href="/claims-refunds" className="flex items-center cursor-pointer">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Claims/Refunds
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="flex items-center cursor-pointer">
                       <UserCircle className="h-4 w-4 mr-2" />
