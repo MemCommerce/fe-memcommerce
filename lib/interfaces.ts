@@ -12,5 +12,5 @@ export interface WishlistButtonProps {
   productId: string;
   productName: string;
   productPrice: number;
-  showAlert: (message: string) => void;
+
 }
