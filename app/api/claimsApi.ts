@@ -15,6 +15,8 @@ export const getClaims = async (token: string): Promise<ClaimWithItems[]> => {
   }
 
   const data: ClaimWithItems[] = await resp.json();
+  console.log(data);
+  
 
   return data;
 };
