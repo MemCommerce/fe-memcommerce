@@ -35,16 +35,15 @@ export default function CategoryPage({ products: initialProducts }: CategoryPage
       params.append("page", currentPage.toString());
       params.append("limit", itemsPerPage.toString());
 
-      console.log(params, 'from params');
 
       if (selectedSizes.length > 0) params.append("sizes", selectedSizes.join(","));
       if (selectedColors.length > 0) params.append("colors", selectedColors.join(","));
 
       try {
-        console.log(`${STOREFRONT_URL}paginated?${params.toString()}`);
+
         const res = await fetch(`${STOREFRONT_URL}paginated?${params.toString()}`);
         const data = await res.json();
-        console.log(data, "from reposne");
+
         
         setProducts(data.items);
         setTotalPages(Math.ceil(data.total / itemsPerPage));
