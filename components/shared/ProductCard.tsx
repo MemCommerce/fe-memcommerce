@@ -4,11 +4,10 @@ import { useContext, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
-import { useWishlist } from "@/hooks/useWishlist";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { ProductCardProps } from "@/lib/interfaces";
-import { CartLineItemData, Size, WishlistItemData } from "@/lib/types";
+import { CartLineItemData, Size } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -26,7 +25,6 @@ export default function ProductCard({ product }: ProductCardProps) {
   }, []);
 
   const { addToCart } = useCart();
-  const { addToWishlist } = useWishlist();
 
   const showAlert = (message: string) => {
     setAlertMessage(message)
@@ -46,19 +44,6 @@ export default function ProductCard({ product }: ProductCardProps) {
       name: product.name,
     }
     addToCart(cartItem, token);
-  };
-
-  const handleAddToWishlist = () => {
-    if (!token) {
-      showAlert("Please log in to add items to your wishlist.")
-      return;
-    }
-    const item: WishlistItemData = {
-      product_variant_id: selectedProductVariant.id,
-      price: selectedProductVariant.price,
-      name: product.name,
-    };
-    addToWishlist(item, token);
   };
 
   const handleSizeChange = (value: string) => {

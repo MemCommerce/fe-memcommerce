@@ -15,5 +15,6 @@ export const WISHLIST_URL = `${API_URL}/wishlist/`;
 export const ORDER_URL = `${API_URL}/orders/`;
 export const REVIEW_URL = `${API_URL}/reviews/`;
 export const PAGINATION_URL = `${API_URL}/storefront/`
+export const CLAIMS_URL = `${API_URL}/claims/`;
 
 export const AI_CHAT_URL = `${CUSTOMER_AGENT_URL}/chat`
