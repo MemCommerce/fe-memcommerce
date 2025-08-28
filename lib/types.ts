@@ -220,3 +220,26 @@ export type Tokens = {
   access_token: string;
   refresh_token: string;
 };
+
+// Claims 
+export type ClaimItem = {
+  id: string;
+  claim_id: string;
+  order_item_id: string;
+  quantity: number;
+  resolution: string;
+  refund_amount: string;
+};
+
+export type ClaimRequest = {
+  id: string;
+  user_id: string;
+  order_id: string;
+  reason: string;
+  status: string; 
+};
+
+export type ClaimWithItems = {
+  claim_request: ClaimRequest;
+  items: ClaimItem[];
+};
