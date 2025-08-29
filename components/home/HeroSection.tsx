@@ -20,7 +20,7 @@ export default function HeroSection() {
         </div>
 
         <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden">
-          <Image src="/placeholder.svg?height=1000&width=800" alt="Fashion collection" fill className="object-cover" />
+          <Image src="/langing_page.png?height=1000&width=800" alt="Fashion collection" fill className="object-cover" />
         </div>
       </div>
     </section>

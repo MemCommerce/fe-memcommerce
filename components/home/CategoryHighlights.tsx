@@ -5,17 +5,17 @@ export default function CategoryHighlights() {
   const categories = [
     {
       name: "Men",
-      image: "/placeholder.svg?height=600&width=400",
+      image: "/mens_category.png?height=600&width=400",
       link: "/men",
     },
     {
       name: "Women",
-      image: "/placeholder.svg?height=600&width=400",
+      image: "/womens_category.png?height=600&width=400",
       link: "/women",
     },
     {
       name: "Kids",
-      image: "/placeholder.svg?height=600&width=400",
+      image: "/kids_category.png?height=600&width=400",
       link: "/kids",
     },
   ]
@@ -34,7 +34,7 @@ export default function CategoryHighlights() {
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                 <div className="text-center">
                   <h3 className="text-2xl font-bold text-white mb-4">{category.name}</h3>
                   <Button asChild>
