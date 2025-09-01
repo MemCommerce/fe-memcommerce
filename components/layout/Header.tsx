@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -33,6 +33,9 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const totalItems = cartLineItems.length;
 
@@ -45,13 +48,15 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-2">
-            <Image
-              src="/logo1.png"
-              className={theme === "dark" ? "invert" : ""}
-              alt="MemCommerce Logo"
-              width={32}
-              height={32}
-            />
+            {mounted && (
+              <Image
+                src="/logo1.png"
+                className={theme === "dark" ? "invert" : ""}
+                alt="MemCommerce Logo"
+                width={32}
+                height={32}
+              />
+            )}
             <span className="text-xl font-bold text-black dark:text-black">MemCommerce</span>
           </Link>
 
