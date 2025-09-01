@@ -13,7 +13,7 @@ import {
   LogOut,
   MessageSquare,
   Heart,
-  BaggageClaim
+  BaggageClaim,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,7 +43,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-2">
             <Image src="/logo1.png" alt="MemCommerce Logo" width={32} height={32} />
-            <span className="text-xl font-bold">MemCommerce</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-gray-900">MemCommerce</span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
@@ -91,9 +91,9 @@ export default function Header() {
                       My Reviews
                     </Link>
                   </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild>
                     <Link href="/claims-refunds" className="flex items-center cursor-pointer">
-                      <BaggageClaim  className="h-4 w-4 mr-2" />
+                      <BaggageClaim className="h-4 w-4 mr-2" />
                       Claims/Refunds
                     </Link>
                   </DropdownMenuItem>
@@ -126,7 +126,7 @@ export default function Header() {
               )}
             </Link>
 
-            <ModeToggle/>
+            <ModeToggle />
 
             <Button
               variant="ghost"

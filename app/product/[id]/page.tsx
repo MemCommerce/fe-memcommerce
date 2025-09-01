@@ -25,7 +25,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const { id } = use(params);
   const { token } = use(AuthContext);
 
-
   useEffect(() => {
     (async () => {
       const data = await getStorefrontProductById(id);
@@ -107,7 +106,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="container mx-auto px-4 py-8">
-  
       {/* Back button */}
       <Button variant="ghost" className="mb-6 flex items-center gap-1" onClick={() => router.back()}>
         <ChevronLeft className="h-4 w-4" />
@@ -146,7 +144,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
 
           <div className="border-t border-b py-4 my-6">
-            <p className="text-gray-700 mb-4">{product.description}</p>
+            <p className="text-foreground mb-4">{product.description}</p>
             <div className="space-y-1 mb-4">
               <p>
                 <strong>Category:</strong>{" "}
@@ -220,11 +218,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             Add to Cart
           </Button>
 
-          <WishlistButton
-            productId={id}
-            productName={product.name}
-            productPrice={selectedProductVariant.price}
-          />
+          <WishlistButton productId={id} productName={product.name} productPrice={selectedProductVariant.price} />
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <h3 className="font-medium mb-2">Product Details</h3>
