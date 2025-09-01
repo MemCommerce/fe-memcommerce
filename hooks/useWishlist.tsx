@@ -17,17 +17,34 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
 
   useEffect(() => {
+    const channel = new BroadcastChannel("wishlist_channel");
+    channel.onmessage = (event) => {
+      setWishlistItems(event.data);
+    };
+
     const saved = localStorage.getItem("wishlistItems");
     if (saved) {
       setWishlistItems(JSON.parse(saved));
     }
+
+    return () => {
+      channel.close();
+    };
+
   }, []);
+
+  const broadcast = (items: WishlistItem[]) => {
+    const channel = new BroadcastChannel("wishlist_channel");
+    channel.postMessage(items);
+    channel.close();
+  };
   
   const loadWishlist = useCallback(async (token: string) => {
     try {
       const items = await getWishlist(token);
       setWishlistItems(items);
-      localStorage.setItem("wishlistItems", JSON.stringify(items));
+      broadcast(items); 
+      // localStorage.setItem("wishlistItems", JSON.stringify(items));
     } catch (error) {
       console.error("Failed to load wishlist:", error);
     }
@@ -38,7 +55,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       const added = await postWishlistItem(item, token);
       const newState = [...wishlistItems, added];
       setWishlistItems(newState);
-      localStorage.setItem("wishlistItems", JSON.stringify(newState));
+       broadcast(newState); // ✅ 
+      // localStorage.setItem("wishlistItems", JSON.stringify(newState));
     } catch (error) {
       console.error("Failed to add item to wishlist:", error);
     }
@@ -51,7 +69,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       const newState = wishlistItems.filter((item) => item.id !== itemId);
 
       setWishlistItems(newState);
-      localStorage.setItem("wishlistItems", JSON.stringify(newState));
+      broadcast(newState);
+      // localStorage.setItem("wishlistItems", JSON.stringify(newState));
     } catch (error) {
       console.error("Failed to remove item from wishlist:", error);
     }
