@@ -143,25 +143,25 @@ export default function CartPage() {
             <h2 className="text-xl font-bold mb-4">Order Information</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="full_name">Full Name</Label>
-                <Input id="full_name" name="full_name" value={formData.full_name} onChange={handleChange} required />
+                <Label htmlFor="full_name" className="text-gray-700 dark:text-gray-50">Full Name</Label>
+                <Input className="border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-50 bg-white dark:bg-input" id="full_name" name="full_name" value={formData.full_name} onChange={handleChange} required />
               </div>
               <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
+                <Label htmlFor="email" className="text-gray-700 dark:text-gray-50">Email</Label>
+                <Input className="border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-50 bg-white dark:bg-input" id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
               </div>
               <div>
-                <Label htmlFor="address">Address</Label>
-                <Input id="address" name="address" value={formData.address} onChange={handleChange} required />
+                <Label htmlFor="address" className="text-gray-700 dark:text-gray-50">Address</Label>
+                <Input className="border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-50 bg-white dark:bg-input" id="address" name="address" value={formData.address} onChange={handleChange} required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="city">City</Label>
-                  <Input id="city" name="city" value={formData.city} onChange={handleChange} required />
+                  <Label htmlFor="city" className="text-gray-700 dark:text-gray-50">City</Label>
+                  <Input className="border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-50 bg-white dark:bg-input" id="city" name="city" value={formData.city} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Label htmlFor="country">Country</Label>
-                  <Input id="country" name="country" value={formData.country} onChange={handleChange} required />
+                  <Label htmlFor="country" className="text-gray-700 dark:text-gray-50">Country</Label>
+                  <Input className="border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-50 bg-white dark:bg-input" id="country" name="country" value={formData.country} onChange={handleChange} required />
                 </div>
               </div>
               <Button type="submit" className="w-full" disabled={cartLineItems.length === 0 || isLoading}>

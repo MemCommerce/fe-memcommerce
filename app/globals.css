@@ -79,13 +79,13 @@
 }
 
 .dark {
-  --background: oklch(0.25 0 0); /* по-светло тъмно вместо почти черно */
-  --foreground: oklch(0.95 0 0); /* по-мек бял текст */
-  --card: oklch(0.3 0 0); /* мек тъмен card */
+  --background: oklch(0.25 0 0); 
+  --foreground: oklch(0.95 0 0); 
+  --card: oklch(0.3 0 0); 
   --card-foreground: oklch(0.95 0 0);
   --popover: oklch(0.3 0 0);
   --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.6 0 0); /* по-малко контрастен primary */
+  --primary: oklch(0.6 0 0); 
   --primary-foreground: oklch(0.25 0 0);
   --secondary: oklch(0.4 0 0);
   --secondary-foreground: oklch(0.95 0 0);
@@ -95,7 +95,7 @@
   --accent-foreground: oklch(0.95 0 0);
   --destructive: oklch(0.7 0.19 22.216);
   --border: oklch(0.8 0 0 / 10%);
-  --input: oklch(0.85 0 0 / 15%);
+  --input: oklch(0.85 0 0 / 15%); 
   --ring: oklch(0.6 0 0);
   --sidebar: oklch(0.3 0 0);
   --sidebar-foreground: oklch(0.95 0 0);

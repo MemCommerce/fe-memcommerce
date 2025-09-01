@@ -25,19 +25,18 @@ import {
 import { useCart } from "@/hooks/useCart";
 import AuthContext from "@/context/AuthContext";
 import ThemeToggle from "../DarkTheme/ThemeToggle";
-import { useTheme } from "next-themes";
 
 export default function Header() {
   const { cartLineItems } = useCart();
   const { token, logOut } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const totalItems = cartLineItems.length;
 
+  const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const totalItems = cartLineItems.length;
+  if (!mounted) return null;
 
   const handleLogout = () => {
     logOut();
@@ -48,15 +47,8 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-2">
-            {mounted && (
-              <Image
-                src="/logo1.png"
-                className={theme === "dark" ? "invert" : ""}
-                alt="MemCommerce Logo"
-                width={32}
-                height={32}
-              />
-            )}
+            <Image src="/logo1.png" className="header-logo" alt="MemCommerce Logo" width={32} height={32} />
+
             <span className="text-xl font-bold text-black dark:text-black">MemCommerce</span>
           </Link>
 

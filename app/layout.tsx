@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ChatbotButton from "@/components/layout/ChatbotButton";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "MemCommerce",
-  description: "AI-powered e-commerce storefront built with Next.js. MemCommerce delivers smart product discovery, personalized shopping, and blazing-fast performance.",
+  description:
+    "AI-powered e-commerce storefront built with Next.js. MemCommerce delivers smart product discovery, personalized shopping, and blazing-fast performance.",
   icons: {
     icon: "/memcommerce.svg",
   },
@@ -32,17 +33,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-           <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-grow">{children}</main>
             <Footer />
             <ChatbotButton />
           </div>
-          <Toaster position="top-right" /> 
+          <Toaster position="top-right" />
         </Providers>
       </body>
     </html>

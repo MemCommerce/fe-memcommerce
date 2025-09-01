@@ -10,12 +10,14 @@ export default function ThemeToggle() {
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
+  const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-100 transition-colors"
     >
-      {theme === "dark" ? "🌙" : "☀️"}
+      {isDark ? "🌙" : "☀️"}
     </button>
   );
 }
