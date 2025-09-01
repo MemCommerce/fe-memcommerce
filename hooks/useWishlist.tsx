@@ -44,7 +44,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       const items = await getWishlist(token);
       setWishlistItems(items);
       broadcast(items); 
-      // localStorage.setItem("wishlistItems", JSON.stringify(items));
+      localStorage.setItem("wishlistItems", JSON.stringify(items));
     } catch (error) {
       console.error("Failed to load wishlist:", error);
     }
@@ -56,7 +56,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       const newState = [...wishlistItems, added];
       setWishlistItems(newState);
        broadcast(newState); // ✅ 
-      // localStorage.setItem("wishlistItems", JSON.stringify(newState));
+      localStorage.setItem("wishlistItems", JSON.stringify(newState));
     } catch (error) {
       console.error("Failed to add item to wishlist:", error);
     }
@@ -70,7 +70,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
       setWishlistItems(newState);
       broadcast(newState);
-      // localStorage.setItem("wishlistItems", JSON.stringify(newState));
+      localStorage.setItem("wishlistItems", JSON.stringify(newState));
     } catch (error) {
       console.error("Failed to remove item from wishlist:", error);
     }
