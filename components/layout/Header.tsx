@@ -13,7 +13,7 @@ import {
   LogOut,
   MessageSquare,
   Heart,
-  BaggageClaim
+  BaggageClaim,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,11 +24,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/hooks/useCart";
 import AuthContext from "@/context/AuthContext";
+import ThemeToggle from "../DarkTheme/ThemeToggle";
+import { useTheme } from "next-themes";
 
 export default function Header() {
   const { cartLineItems } = useCart();
   const { token, logOut } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { theme } = useTheme();
 
   const totalItems = cartLineItems.length;
 
@@ -37,12 +41,18 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-white shadow-sm sticky top-0 z-50 ">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo1.png" alt="MemCommerce Logo" width={32} height={32} />
-            <span className="text-xl font-bold">MemCommerce</span>
+            <Image
+              src="/logo1.png"
+              className={theme === "dark" ? "invert" : ""}
+              alt="MemCommerce Logo"
+              width={32}
+              height={32}
+            />
+            <span className="text-xl font-bold text-black dark:text-black">MemCommerce</span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
@@ -90,9 +100,9 @@ export default function Header() {
                       My Reviews
                     </Link>
                   </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild>
                     <Link href="/claims-refunds" className="flex items-center cursor-pointer">
-                      <BaggageClaim  className="h-4 w-4 mr-2" />
+                      <BaggageClaim className="h-4 w-4 mr-2" />
                       Claims/Refunds
                     </Link>
                   </DropdownMenuItem>
@@ -124,6 +134,8 @@ export default function Header() {
                 </span>
               )}
             </Link>
+
+            <ThemeToggle />
 
             <Button
               variant="ghost"
