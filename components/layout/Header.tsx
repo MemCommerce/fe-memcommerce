@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/hooks/useCart";
 import AuthContext from "@/context/AuthContext";
+import { ModeToggle } from "../darkTheme/modeToggle";
 
 export default function Header() {
   const { cartLineItems } = useCart();
@@ -124,6 +125,8 @@ export default function Header() {
                 </span>
               )}
             </Link>
+
+            <ModeToggle/>
 
             <Button
               variant="ghost"
