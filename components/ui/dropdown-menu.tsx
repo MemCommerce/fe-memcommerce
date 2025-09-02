@@ -5,7 +5,6 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "./button"
 
 function DropdownMenu({
   ...props
@@ -20,22 +19,15 @@ function DropdownMenuPortal({
     <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
   )
 }
+
 function DropdownMenuTrigger({
-  className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
   return (
-    <DropdownMenuPrimitive.Trigger asChild>
-      <Button
-        variant="outline"
-        size="icon"
-        className={cn(
-          "text-gray-900 dark:text-gray-900 border-gray-300 hover:bg-gray-100",
-          className
-        )}
-        {...props}
-      />
-    </DropdownMenuPrimitive.Trigger>
+    <DropdownMenuPrimitive.Trigger
+      data-slot="dropdown-menu-trigger"
+      {...props}
+    />
   )
 }
 
