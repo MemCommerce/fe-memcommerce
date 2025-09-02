@@ -51,22 +51,30 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     return [...acc, { id: variant.size_id, label: variant.size }];
   }, []);
 
-  const handleAddToCart = () => {
+const handleAddToCart = () => {
+  if (!token) {
     toast({
-      title: "Added to cart!",
-      description: "Item added successfully.",
+      title: "Unauthorized",
+      description: "Please log in to add items to your cart.",
+      variant: "destructive",
     });
+    return;
+  }
 
-    if (!token) return;
-
-    const cartItem: CartLineItemData = {
-      product_variant_id: selectedProductVariant.id,
-      quantity,
-      price: selectedProductVariant.price,
-      name: product.name,
-    };
-    addToCart(cartItem, token);
+  const cartItem: CartLineItemData = {
+    product_variant_id: selectedProductVariant.id,
+    quantity,
+    price: selectedProductVariant.price,
+    name: product.name,
   };
+
+  addToCart(cartItem, token);
+
+  toast({
+    title: "Added to Cart",
+    description: `${product.name} added successfully!`,
+  });
+};
 
   const handleSizeChange = (value: string) => {
     const newPvState = product.variants.find((pv) => pv.size_id === value)!;
