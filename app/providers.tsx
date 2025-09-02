@@ -6,6 +6,7 @@ import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import AuthProvider from "@/context/AuthProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
+import { ToastProvider } from "@/components/ui/toast";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +18,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <AuthProvider>
         <CartProvider>
-          <WishlistProvider>{children}</WishlistProvider>
+          <WishlistProvider>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </WishlistProvider>
         </CartProvider>
       </AuthProvider>
     </ThemeProvider>
