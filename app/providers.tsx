@@ -7,9 +7,10 @@ import { WishlistProvider } from "@/hooks/useWishlist";
 import AuthProvider from "@/context/AuthProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { ToastProvider } from "@/components/ui/toast";
+import { ToastViewport } from "@radix-ui/react-toast";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return (
+ return (
     <ThemeProvider
       attribute="class"
       defaultTheme="system"
@@ -21,6 +22,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <WishlistProvider>
             <ToastProvider>
               {children}
+              <ToastViewport />
             </ToastProvider>
           </WishlistProvider>
         </CartProvider>

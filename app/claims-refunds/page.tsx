@@ -5,26 +5,28 @@ import { getClaims } from "../api/claimsApi";
 
 import { ClaimWithItems } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
-import toast from "react-hot-toast";
+
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ClaimsPage() {
   const [isLoading, setLoading] = useState(true);
   const [claims, setClaims] = useState<ClaimWithItems[]>([]);
   const { token } = use(AuthContext);
+  const { toast, ToastContainer } = useToast();
 
   useEffect(() => {
     if (!token) return;
 
     const fetchClaims = async () => {
-      toast.loading("Loading claims...");
+      toast({ title: "Loading...", description: "Fetching claims..." });
 
       try {
         const data = await getClaims(token);
         setClaims(data);
-        toast.success("Claims loaded successfully!");
+        toast({ title: "Success", description: "Claims loaded successfully!" });
       } catch (err) {
         console.error("Error fetching claims:", err);
-        toast.error("Failed to load claims.");
+        toast({ title: "Error", description: "Failed to load claims.", variant: "destructive" });
       } finally {
         setLoading(false);
       }
@@ -38,7 +40,7 @@ export default function ClaimsPage() {
       <h1 className="text-2xl font-bold mb-6">Claims & Refunds</h1>
       {isLoading && <p>Loading...</p>}
 
-      {claims.length === 0 ? (
+      {claims.length === 0 && !isLoading ? (
         <p>No claims found.</p>
       ) : (
         <table className="min-w-full border mb-8">
@@ -95,6 +97,9 @@ export default function ClaimsPage() {
           within 24 hours.
         </p>
       </section>
+
+      {/* TOAST */}
+      <ToastContainer />
     </div>
   );
 }

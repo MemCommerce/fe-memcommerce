@@ -7,13 +7,14 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { WishlistButtonProps } from "@/lib/interfaces";
 import { WishlistItemData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
+import { useToast } from "./ui/use-toast";
 
 const WishlistButton: FC<WishlistButtonProps> = ({ productId, productPrice, productName }) => {
   const { token } = use(AuthContext);
   const { addToWishlist, wishlistItems, removeFromWishlist } = useWishlist();
   const [isLoading, setIsLoading] = useState(false);
   const isFavorited = wishlistItems.some((item) => item.product_id === productId);
+  const { toast } = useToast();
 
   const text = isFavorited ? (
     <>
@@ -27,17 +28,19 @@ const WishlistButton: FC<WishlistButtonProps> = ({ productId, productPrice, prod
 
   const handleOnClick = async () => {
     if (!token) {
-      toast.error("Please log in to add items to your wishlist.", { duration: 4000 });
+      toast({ title: "Unauthorized", description: "Please log in to add items to your wishlist.", variant: "destructive" });
       return;
     }
 
     setIsLoading(true);
+
     if (isFavorited) {
       const wishListItemId = wishlistItems.find((item) => item.product_id === productId)!.id;
       try {
         await removeFromWishlist(wishListItemId, token);
+        toast({ title: "Removed", description: "Removed from wishlist." });
       } catch {
-        console.error("Error on remove from wishlist");
+        toast({ title: "Error", description: "Failed to remove from wishlist.", variant: "destructive" });
       } finally {
         setIsLoading(false);
       }
@@ -49,10 +52,12 @@ const WishlistButton: FC<WishlistButtonProps> = ({ productId, productPrice, prod
       price: productPrice,
       name: productName,
     };
+
     try {
       await addToWishlist(item, token);
+      toast({ title: "Added", description: "Added to wishlist!" });
     } catch {
-      console.error("Error on add to wishlist");
+      toast({ title: "Error", description: "Failed to add to wishlist.", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
