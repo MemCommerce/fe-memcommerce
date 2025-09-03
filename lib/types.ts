@@ -243,3 +243,11 @@ export type ClaimWithItems = {
   claim_request: ClaimRequest;
   items: ClaimItem[];
 };
+
+
+// PRoduct revierews page 
+export interface ProductReviewsProps {
+  reviews: SFProductWithReview["reviews"];
+  getVariantForReview: (variantId: string) => SFProductWithReview["variants"][0] | undefined;
+  averageRating: number;
+}
