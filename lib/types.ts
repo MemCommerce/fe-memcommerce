@@ -260,3 +260,12 @@ export interface ProductOptionsProps {
   availableSizes: Size[];
   token?: string;
 }
+
+// Product info props 
+export interface ProductInfoProps {
+  name: string;
+  description: string;
+  categoryName: string;
+  price: number;
+  id: string;
+}
