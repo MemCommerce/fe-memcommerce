@@ -14,8 +14,7 @@ import { CartLineItemData, SFProductWithReview, Size, StorefrontVariant } from "
 import AuthContext from "@/context/AuthContext";
 import ShareButton from "@/components/shared/ShareButton";
 import WishlistButton from "@/components/WishlistButton";
-import { useToast } from "@/components/ui/use-toast";
-
+import { toast } from "sonner";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -25,8 +24,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const { addToCart } = useCart();
   const { id } = use(params);
   const { token } = use(AuthContext);
-
-  const { toast, ToastContainer: BaseToastContainer } = useToast();
 
   useEffect(() => {
     (async () => {
@@ -51,30 +48,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     return [...acc, { id: variant.size_id, label: variant.size }];
   }, []);
 
-const handleAddToCart = () => {
-  if (!token) {
-    toast({
-      title: "Unauthorized",
-      description: "Please log in to add items to your cart.",
-      variant: "destructive",
-    });
-    return;
-  }
+  const handleAddToCart = () => {
+    if (!token) {
+      toast.error("Please log in to add items to your cart."); //
+      return;
+    }
 
-  const cartItem: CartLineItemData = {
-    product_variant_id: selectedProductVariant.id,
-    quantity,
-    price: selectedProductVariant.price,
-    name: product.name,
+    const cartItem: CartLineItemData = {
+      product_variant_id: selectedProductVariant.id,
+      quantity,
+      price: selectedProductVariant.price,
+      name: product.name,
+    };
+
+    addToCart(cartItem, token);
+
+    toast.success(`${product.name} added to cart!`);
   };
-
-  addToCart(cartItem, token);
-
-  toast({
-    title: "Added to Cart",
-    description: `${product.name} added successfully!`,
-  });
-};
 
   const handleSizeChange = (value: string) => {
     const newPvState = product.variants.find((pv) => pv.size_id === value)!;
@@ -278,9 +268,6 @@ const handleAddToCart = () => {
           <Button variant="outline">Write a Review</Button>
         </div>
       )}
-
-      {/* TOAST */}
-      <BaseToastContainer />
     </div>
   );
 }

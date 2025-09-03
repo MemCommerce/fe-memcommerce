@@ -6,8 +6,7 @@ import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import AuthProvider from "@/context/AuthProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
-import { ToastProvider } from "@/components/ui/toast";
-import { ToastViewport } from "@radix-ui/react-toast";
+import { Toaster } from "sonner"; 
 
 export function Providers({ children }: { children: React.ReactNode }) {
  return (
@@ -20,10 +19,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <AuthProvider>
         <CartProvider>
           <WishlistProvider>
-            <ToastProvider>
-              {children}
-              <ToastViewport />
-            </ToastProvider>
+            {children}
+            <Toaster richColors position="bottom-right" />
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>

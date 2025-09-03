@@ -1,32 +1,29 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getClaims } from "../api/claimsApi";
-
 import { ClaimWithItems } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
-
-import { useToast } from "@/components/ui/use-toast";
+import { toast, Toaster } from "sonner";
 
 export default function ClaimsPage() {
   const [isLoading, setLoading] = useState(true);
   const [claims, setClaims] = useState<ClaimWithItems[]>([]);
-  const { token } = use(AuthContext);
-  const { toast, ToastContainer } = useToast();
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     if (!token) return;
 
     const fetchClaims = async () => {
-      toast({ title: "Loading...", description: "Fetching claims..." });
+      toast("Fetching claims...");
 
       try {
         const data = await getClaims(token);
         setClaims(data);
-        toast({ title: "Success", description: "Claims loaded successfully!" });
+        toast.success("Claims loaded successfully!");
       } catch (err) {
         console.error("Error fetching claims:", err);
-        toast({ title: "Error", description: "Failed to load claims.", variant: "destructive" });
+        toast.error("Failed to load claims.");
       } finally {
         setLoading(false);
       }
@@ -38,6 +35,7 @@ export default function ClaimsPage() {
   return (
     <div className="container mx-auto px-4 py-16">
       <h1 className="text-2xl font-bold mb-6">Claims & Refunds</h1>
+
       {isLoading && <p>Loading...</p>}
 
       {claims.length === 0 && !isLoading ? (
@@ -98,8 +96,7 @@ export default function ClaimsPage() {
         </p>
       </section>
 
-      {/* TOAST */}
-      <ToastContainer />
+      <Toaster richColors position="bottom-right" />
     </div>
   );
 }
