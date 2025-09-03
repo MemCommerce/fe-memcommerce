@@ -12,6 +12,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
       </div>
     );
   }
-
-  return <ProductDetailClient product={product} productId={params.id} />;
+  
+return <ProductDetailClient product={product} productId={params.id} />;
+  
 }

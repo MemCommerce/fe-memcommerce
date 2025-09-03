@@ -1,22 +1,21 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getClaims } from "../api/claimsApi";
-
 import { ClaimWithItems } from "@/lib/types";
 import AuthContext from "@/context/AuthContext";
-import toast from "react-hot-toast";
+import { toast, Toaster } from "sonner";
 
 export default function ClaimsPage() {
   const [isLoading, setLoading] = useState(true);
   const [claims, setClaims] = useState<ClaimWithItems[]>([]);
-  const { token } = use(AuthContext);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     if (!token) return;
 
     const fetchClaims = async () => {
-      toast.loading("Loading claims...");
+      toast("Fetching claims...");
 
       try {
         const data = await getClaims(token);
@@ -36,9 +35,10 @@ export default function ClaimsPage() {
   return (
     <div className="container mx-auto px-4 py-16">
       <h1 className="text-2xl font-bold mb-6">Claims & Refunds</h1>
+
       {isLoading && <p>Loading...</p>}
 
-      {claims.length === 0 ? (
+      {claims.length === 0 && !isLoading ? (
         <p>No claims found.</p>
       ) : (
         <table className="min-w-full border mb-8">
@@ -95,6 +95,8 @@ export default function ClaimsPage() {
           within 24 hours.
         </p>
       </section>
+
+      <Toaster richColors position="bottom-right" />
     </div>
   );
 }

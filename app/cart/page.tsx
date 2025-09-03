@@ -139,31 +139,81 @@ export default function CartPage() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Order Information</h2>
+          <div className="bg-background p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-bold mb-4 text-foreground">Order Information</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="full_name">Full Name</Label>
-                <Input id="full_name" name="full_name" value={formData.full_name} onChange={handleChange} required />
+                <Label htmlFor="full_name" className="text-foreground">
+                  Full Name
+                </Label>
+                <Input
+                  id="full_name"
+                  name="full_name"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                  required
+                  className="bg-background text-foreground border-input focus:ring-2 focus:ring-ring focus:border-ring"
+                />
               </div>
+
               <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
+                <Label htmlFor="email" className="text-foreground">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="bg-background text-foreground border-input focus:ring-2 focus:ring-ring focus:border-ring"
+                />
               </div>
+
               <div>
-                <Label htmlFor="address">Address</Label>
-                <Input id="address" name="address" value={formData.address} onChange={handleChange} required />
+                <Label htmlFor="address" className="text-foreground">
+                  Address
+                </Label>
+                <Input
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  className="bg-background text-foreground border-input focus:ring-2 focus:ring-ring focus:border-ring"
+                />
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="city">City</Label>
-                  <Input id="city" name="city" value={formData.city} onChange={handleChange} required />
+                  <Label htmlFor="city" className="text-foreground">
+                    City
+                  </Label>
+                  <Input
+                    id="city"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    required
+                    className="bg-background text-foreground border-input focus:ring-2 focus:ring-ring focus:border-ring"
+                  />
                 </div>
                 <div>
-                  <Label htmlFor="country">Country</Label>
-                  <Input id="country" name="country" value={formData.country} onChange={handleChange} required />
+                  <Label htmlFor="country" className="text-foreground">
+                    Country
+                  </Label>
+                  <Input
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    required
+                    className="bg-background text-foreground border-input focus:ring-2 focus:ring-ring focus:border-ring"
+                  />
                 </div>
               </div>
+
               <Button type="submit" className="w-full" disabled={cartLineItems.length === 0 || isLoading}>
                 Place Order
               </Button>
