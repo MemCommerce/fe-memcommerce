@@ -30,10 +30,13 @@ export default function ProductDetailClient({
   const [selectedProductVariant, setSelectedProductVariant] = useState<StorefrontVariant>(product.variants[0]);
   const [quantity, setQuantity] = useState(1);
 
-  const getVariantForReview = (variantId: string) => product.variants.find((variant) => variant.id === variantId);
+  const findVariantById = (variantId: string) => {
+    return product.variants.find((variant) => variant.id === variantId);
+  };
 
-  const averageRating =
-    product.reviews.length > 0 ? product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length : 0;
+  const averageProductRating = product.reviews.length
+    ? product.reviews.reduce((totalRating, review) => totalRating + review.rating, 0) / product.reviews.length
+    : 0;
 
   const handleAddToCart = () => {
     if (!token) {
@@ -89,11 +92,7 @@ export default function ProductDetailClient({
         </div>
       </div>
 
-      <ProductReviews
-        reviews={product.reviews}
-        getVariantForReview={getVariantForReview}
-        averageRating={averageRating}
-      />
+      <ProductReviews reviews={product.reviews} getVariantForReview={findVariantById} averageRating={averageProductRating} />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Star } from "lucide-react";
 import { ProductReviewsProps } from "@/lib/types";
 
 export default function ProductReviews({ reviews, getVariantForReview, averageRating }: ProductReviewsProps) {
+  
   const renderStarRating = (rating: number) => (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (

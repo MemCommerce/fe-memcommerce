@@ -10,18 +10,32 @@ export default function ProductOptions({
   quantity,
   setQuantity,
 }: ProductOptionsProps) {
-  const availableSizes = product.variants.reduce((acc, variant) => {
-    if (acc.map((s) => s.id).includes(variant.size_id)) return acc;
-    return [...acc, { id: variant.size_id, label: variant.size }];
-  }, [] as { id: string; label: string }[]);
 
-  const handleSizeChange = (value: string) => {
-    const newVariant = product.variants.find((v) => v.size_id === value)!;
-    setSelectedVariant(newVariant);
+  const availableSizes = product.variants.reduce<{ id: string; label: string }[]>((sizes, variant) => {
+    const sizeAlreadyAdded = sizes.some((size) => size.id === variant.size_id);
+
+    if (!sizeAlreadyAdded) {
+      sizes.push({ id: variant.size_id, label: variant.size });
+    }
+
+    return sizes;
+  }, []);
+
+  const handleSizeChange = (selectedSizeId: string) => {
+    const matchingVariant = product.variants.find((variant) => variant.size_id === selectedSizeId);
+
+    if (matchingVariant) {
+      setSelectedVariant(matchingVariant);
+    }
   };
 
-  const handleColorChange = (value: string) => {
-    setSelectedVariant((prev) => product.variants.find((v) => v.color_id === value && v.size_id === prev!.size_id)!);
+  const handleColorChange = (selectedColorId: string) => {
+    setSelectedVariant((currentVariant) => {
+      const matchingVariant = product.variants.find(
+        (variant) => variant.size_id === currentVariant!.size_id && variant.color_id === selectedColorId
+      );
+      return matchingVariant || currentVariant!;
+    });
   };
 
   return (
