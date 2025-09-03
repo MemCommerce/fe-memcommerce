@@ -3,7 +3,8 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
-import { ProductReviewsProps } from "@/lib/types";
+import { ProductReviewsProps } from "@/lib/interfaces";
+
 
 export default function ProductReviews({ reviews, getVariantForReview, averageRating }: ProductReviewsProps) {
   

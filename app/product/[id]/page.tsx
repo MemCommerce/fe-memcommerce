@@ -1,8 +1,17 @@
 import { getStorefrontProductById } from "@/app/api/storefrontApi";
 import ProductDetailClient from "./ProductDetailClient";
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const product = await getStorefrontProductById(params.id);
+interface ProductDetailPageProps {
+  params: Promise<{ id: string }>
+}
+
+export default function ProductDetailPageWrapper(props: ProductDetailPageProps) {
+  return <AsyncProductDetail {...props} />;
+}
+
+async function AsyncProductDetail(props: ProductDetailPageProps) {
+  const { id } = await props.params;
+  const product = await getStorefrontProductById(id);
 
   if (!product) {
     return (
@@ -12,7 +21,6 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
       </div>
     );
   }
-  
-return <ProductDetailClient product={product} productId={params.id} />;
-  
+
+  return <ProductDetailClient product={product} productId={id} />;
 }

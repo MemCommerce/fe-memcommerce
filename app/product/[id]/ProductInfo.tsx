@@ -1,7 +1,7 @@
 "use client";
 
 import ShareButton from "@/components/shared/ShareButton";
-import { ProductInfoProps } from "@/lib/types";
+import { ProductInfoProps } from "@/lib/interfaces";
 
 export default function ProductInfo({ name, description, categoryName, price, id }: ProductInfoProps) {
   return (

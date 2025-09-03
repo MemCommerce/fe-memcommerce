@@ -1,7 +1,7 @@
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ProductOptionsProps } from "@/lib/types";
+import { ProductOptionsProps } from "@/lib/interfaces";
 
 export default function ProductOptions({
   product,
