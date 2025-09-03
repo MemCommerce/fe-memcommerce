@@ -6,7 +6,6 @@ import { Star } from "lucide-react";
 import { ProductReviewsProps } from "@/lib/types";
 
 export default function ProductReviews({ reviews, getVariantForReview, averageRating }: ProductReviewsProps) {
-
   const renderStarRating = (rating: number) => (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
@@ -19,7 +18,6 @@ export default function ProductReviews({ reviews, getVariantForReview, averageRa
   );
 
   if (reviews.length === 0) {
-
     return (
       <div className="mb-16 text-center py-12 bg-gray-50 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">No Reviews Yet</h2>
@@ -33,7 +31,6 @@ export default function ProductReviews({ reviews, getVariantForReview, averageRa
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Customer Reviews</h2>
         <div className="flex items-center gap-2">
-
           {renderStarRating(Math.round(averageRating))}
 
           <span className="text-lg font-medium">{averageRating.toFixed(1)}</span>
@@ -42,7 +39,6 @@ export default function ProductReviews({ reviews, getVariantForReview, averageRa
       </div>
 
       <div className="grid gap-6">
-
         {reviews.map((review) => {
           const variant = getVariantForReview(review.product_variant_id);
 

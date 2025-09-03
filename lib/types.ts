@@ -251,3 +251,12 @@ export interface ProductReviewsProps {
   getVariantForReview: (variantId: string) => SFProductWithReview["variants"][0] | undefined;
   averageRating: number;
 }
+
+// Product options props 
+export interface ProductOptionsProps {
+  productId: string;
+  productName: string;
+  variants: StorefrontVariant[];
+  availableSizes: Size[];
+  token?: string;
+}
