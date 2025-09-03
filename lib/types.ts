@@ -254,11 +254,11 @@ export interface ProductReviewsProps {
 
 // Product options props 
 export interface ProductOptionsProps {
-  productId: string;
-  productName: string;
-  variants: StorefrontVariant[];
-  availableSizes: Size[];
-  token?: string;
+  product: SFProductWithReview;
+  selectedVariant: StorefrontVariant;
+  setSelectedVariant: React.Dispatch<React.SetStateAction<StorefrontVariant>>;
+  quantity: number;
+  setQuantity: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // Product info props 

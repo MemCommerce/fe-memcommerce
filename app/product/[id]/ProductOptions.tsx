@@ -1,53 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import WishlistButton from "@/components/WishlistButton";
-import { useCart } from "@/hooks/useCart";
-import { toast } from "sonner";
-import { CartLineItemData, ProductOptionsProps, StorefrontVariant } from "@/lib/types";
+import { ProductOptionsProps } from "@/lib/types";
 
 export default function ProductOptions({
-  productId,
-  productName,
-  variants,
-  availableSizes,
-  token,
+  product,
+  selectedVariant,
+  setSelectedVariant,
+  quantity,
+  setQuantity,
 }: ProductOptionsProps) {
-  const { addToCart } = useCart();
-
-  const [selectedVariant, setSelectedVariant] = useState<StorefrontVariant>(variants[0]);
-  const [quantity, setQuantity] = useState(1);
-
-  const handleAddToCart = () => {
-    if (!token) {
-      toast.error("Please log in to add items to your cart.");
-      return;
-    }
-
-    const cartItem: CartLineItemData = {
-      product_variant_id: selectedVariant.id,
-      quantity,
-      price: selectedVariant.price,
-      name: productName,
-    };
-
-    addToCart(cartItem, token);
-    toast.success(`${productName} added to cart!`);
-  };
+  const availableSizes = product.variants.reduce((acc, variant) => {
+    if (acc.map((s) => s.id).includes(variant.size_id)) return acc;
+    return [...acc, { id: variant.size_id, label: variant.size }];
+  }, [] as { id: string; label: string }[]);
 
   const handleSizeChange = (value: string) => {
-    const newVariant = variants.find((v) => v.size_id === value)!;
+    const newVariant = product.variants.find((v) => v.size_id === value)!;
     setSelectedVariant(newVariant);
   };
 
   const handleColorChange = (value: string) => {
-    setSelectedVariant((prev) => variants.find((v) => v.color_id === value && v.size_id === prev!.size_id)!);
+    setSelectedVariant((prev) => product.variants.find((v) => v.color_id === value && v.size_id === prev!.size_id)!);
   };
 
   return (
     <div className="space-y-4 mb-6">
+      {/* Size selector */}
       <div>
         <label className="block text-sm font-medium mb-1">Size</label>
         <Select value={selectedVariant.size_id} onValueChange={handleSizeChange}>
@@ -64,6 +43,7 @@ export default function ProductOptions({
         </Select>
       </div>
 
+      {/* Color selector */}
       <div>
         <label className="block text-sm font-medium mb-1">Color</label>
         <Select value={selectedVariant.color_id} onValueChange={handleColorChange}>
@@ -71,7 +51,7 @@ export default function ProductOptions({
             <SelectValue placeholder="Select color" />
           </SelectTrigger>
           <SelectContent>
-            {variants
+            {product.variants
               .filter((v) => v.size_id === selectedVariant.size_id)
               .map((v) => (
                 <SelectItem key={v.id} value={v.color_id}>
@@ -82,6 +62,7 @@ export default function ProductOptions({
         </Select>
       </div>
 
+      {/* Quantity selector */}
       <div>
         <label className="block text-sm font-medium mb-1">Quantity</label>
         <div className="flex items-center">
@@ -100,11 +81,6 @@ export default function ProductOptions({
           </button>
         </div>
       </div>
-
-      <Button onClick={handleAddToCart} className="w-full py-6 text-lg" size="lg">
-        Add to Cart
-      </Button>
-      <WishlistButton productId={productId} productName={productName} productPrice={selectedVariant.price} />
     </div>
   );
 }
