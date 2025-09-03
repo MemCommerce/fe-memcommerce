@@ -14,7 +14,7 @@ import { CartLineItemData, SFProductWithReview, Size, StorefrontVariant } from "
 import AuthContext from "@/context/AuthContext";
 import ShareButton from "@/components/shared/ShareButton";
 import WishlistButton from "@/components/WishlistButton";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -25,7 +25,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const { id } = use(params);
   const { token } = use(AuthContext);
 
-
   useEffect(() => {
     (async () => {
       const data = await getStorefrontProductById(id);
@@ -34,7 +33,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     })();
   }, [params, id]);
 
-  // If product not found, show error
   if (!product || !selectedProductVariant) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
@@ -47,26 +45,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   const availableSizes: Size[] = product.variants.reduce<Size[]>((acc, variant) => {
     if (acc.map((s) => s.id).includes(variant.size_id)) return acc;
-    const size: Size = {
-      id: variant.size_id,
-      label: variant.size,
-    };
-    return [...acc, size];
+    return [...acc, { id: variant.size_id, label: variant.size }];
   }, []);
 
   const handleAddToCart = () => {
     if (!token) {
-      toast.error("Please log in to add items to your cart.", { duration: 4000 });
+      toast.error("Please log in to add items to your cart."); //
       return;
     }
 
     const cartItem: CartLineItemData = {
       product_variant_id: selectedProductVariant.id,
-      quantity: quantity,
+      quantity,
       price: selectedProductVariant.price,
       name: product.name,
     };
+
     addToCart(cartItem, token);
+
+    toast.success(`${product.name} added to cart!`);
   };
 
   const handleSizeChange = (value: string) => {
@@ -80,42 +77,30 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   };
 
-  // Helper function to render star rating
-  const renderStarRating = (rating: number) => {
-    return (
-      <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`}
-          />
-        ))}
-      </div>
-    );
-  };
+  const renderStarRating = (rating: number) => (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`}
+        />
+      ))}
+    </div>
+  );
 
-  // Helper function to get variant details for a review
-  const getVariantForReview = (variantId: string) => {
-    return product.variants.find((variant) => variant.id === variantId);
-  };
+  const getVariantForReview = (variantId: string) => product.variants.find((variant) => variant.id === variantId);
 
-  // Calculate average rating
   const averageRating =
-    product.reviews.length > 0
-      ? product.reviews.reduce((sum, review) => sum + review.rating, 0) / product.reviews.length
-      : 0;
+    product.reviews.length > 0 ? product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length : 0;
 
   return (
     <div className="container mx-auto px-4 py-8">
-  
-      {/* Back button */}
       <Button variant="ghost" className="mb-6 flex items-center gap-1" onClick={() => router.back()}>
         <ChevronLeft className="h-4 w-4" />
         Back
       </Button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-        {/* Product Images */}
         <div className="space-y-4">
           <div className="relative h-[400px] rounded-lg overflow-hidden border">
             <Image
@@ -127,12 +112,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* Product Info */}
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-
           <ShareButton name={product.name} productId={id} />
-
           <div className="flex items-center gap-3 mb-4">
             <p className="text-xl font-semibold">${selectedProductVariant.price.toFixed(2)}</p>
             {product.reviews.length > 0 && (
@@ -146,7 +128,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
 
           <div className="border-t border-b py-4 my-6">
-            <p className="text-gray-700 mb-4">{product.description}</p>
+            <p className="text-foreground mb-4">{product.description}</p>
             <div className="space-y-1 mb-4">
               <p>
                 <strong>Category:</strong>{" "}
@@ -219,25 +201,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <Button onClick={handleAddToCart} className="w-full py-6 text-lg" size="lg">
             Add to Cart
           </Button>
-
-          <WishlistButton
-            productId={id}
-            productName={product.name}
-            productPrice={selectedProductVariant.price}
-          />
+          <WishlistButton productId={id} productName={product.name} productPrice={selectedProductVariant.price} />
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <h3 className="font-medium mb-2">Product Details</h3>
             <p className="text-sm text-gray-600">
-              This premium {product.name.toLowerCase()} is designed for comfort and style. Made with high-quality
-              materials, it&apos;s perfect for everyday wear and special occasions. The {product.category_name}{" "}
-              collection features modern designs that are both trendy and timeless.
+              This premium {product.name.toLowerCase()} is designed for comfort and style...
             </p>
           </div>
         </div>
       </div>
 
-      {/* Reviews Section */}
       {product.reviews.length > 0 && (
         <div className="mb-16">
           <div className="flex items-center justify-between mb-6">
@@ -287,7 +261,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         </div>
       )}
 
-      {/* No Reviews State */}
       {product.reviews.length === 0 && (
         <div className="mb-16 text-center py-12 bg-gray-50 rounded-lg">
           <h2 className="text-2xl font-bold mb-4">No Reviews Yet</h2>
